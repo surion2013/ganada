@@ -182,27 +182,8 @@
                     
                     document.getElementById('success-modal').classList.remove('hidden');
                 } else {
-                    // 로그인 실패 - 데모 계정 시도
-                    if (username === 'demo' && password === 'demo123') {
-                        // 데모 계정 자동 생성 및 로그인
-                        const demoEmail = 'demo@ganada.com';
-                        const demoPassword = 'demo123456';
-                        
-                        const signUpResult = await SupabaseClient.Auth.signUp(demoEmail, demoPassword, {
-                            username: 'demo',
-                            full_name: 'Demo User'
-                        });
-                        
-                        if (signUpResult.success) {
-                            document.getElementById('error-message').textContent = 
-                                '데모 계정이 생성되었습니다. 이메일을 확인하고 계정을 활성화해주세요.';
-                        } else {
-                            document.getElementById('error-message').textContent = 
-                                '데모 계정 생성 실패: ' + signUpResult.error;
-                        }
-                    } else {
-                        document.getElementById('error-message').textContent = result.error;
-                    }
+                    // 로그인 실패
+                    document.getElementById('error-message').textContent = result.error;
                     document.getElementById('error-modal').classList.remove('hidden');
                 }
             } catch (error) {
@@ -259,24 +240,7 @@
             }
         });
 
-        // 데모 계정 힌트 표시
-        function showDemoHint() {
-            const hint = document.createElement('div');
-            hint.className = 'mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800';
-            hint.innerHTML = `
-                <strong>데모 계정:</strong><br>
-                사용자명: demo, 비밀번호: demo123
-            `;
-            
-            const form = document.querySelector('form');
-            if (form && !document.querySelector('.demo-hint')) {
-                hint.classList.add('demo-hint');
-                form.parentNode.insertBefore(hint, form.nextSibling);
-            }
-        }
 
-        // 페이지 로드 후 3초 뒤에 데모 힌트 표시
-        setTimeout(showDemoHint, 3000);
     </script>
 </body>
 </html> 
