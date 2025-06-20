@@ -50,8 +50,8 @@ function createNavigation(currentPage = '') {
 // 공통 푸터 컴포넌트
 function createFooter() {
     return `
-        <footer class="border-t border-solid border-t-[#f0f2f4] px-10 py-6 mt-auto">
-            <div class="flex flex-col items-center justify-center gap-2">
+        <footer class="border-t border-solid border-t-[#f0f2f4] px-10 py-3 mt-auto">
+            <div class="flex flex-col items-center justify-center gap-1">
                 <div class="flex items-center gap-2 text-[#6a7581]">
                     <div class="size-3">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -60,8 +60,8 @@ function createFooter() {
                     </div>
                     <span class="text-sm font-medium">GaNaDa</span>
                 </div>
-                <p class="text-[#6a7581] text-xs text-center">
-                    © ${new Date().getFullYear()} UJUSOL. All rights reserved.
+                <p class="text-[#6a7581] text-xs text-center leading-tight">
+                    © 2025 UJUSOL. All rights reserved.
                 </p>
             </div>
         </footer>
