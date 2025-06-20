@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800"
+    />
+    <title>Email Confirmed - GaNaDa</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+</head>
+<body>
+    <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+        <!-- 로고 섹션 -->
+        <div class="sm:mx-auto sm:w-full sm:max-w-md">
+            <div class="flex justify-center items-center mb-8">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
+                    <div class="size-6">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="#121416"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-900">GaNaDa</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- 확인 완료 메시지 -->
+        <div class="sm:mx-auto sm:w-full sm:max-w-md">
+            <div class="bg-white py-8 px-6 shadow-sm rounded-lg sm:px-10">
+                <div class="text-center">
+                    <!-- 성공 아이콘 -->
+                    <div class="mb-6">
+                        <svg class="mx-auto h-16 w-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+
+                    <!-- 제목과 메시지 -->
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Email Confirmed! 🎉</h2>
+                    <p class="text-gray-600 text-base mb-6 leading-relaxed">
+                        Welcome to GaNaDa! Your account has been successfully verified. You can now log in and start exploring amazing artworks from talented artists around the world.
+                    </p>
+
+                    <!-- 로그인 버튼 -->
+                    <div class="space-y-4">
+                        <button
+                            onclick="goToLogin()"
+                            class="w-full flex justify-center py-4 px-4 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                        >
+                            Log In to GaNaDa
+                        </button>
+                        
+                        <p class="text-sm text-gray-500">
+                            Ready to discover and share amazing art? 
+                            <a href="index.html" class="text-blue-600 hover:text-blue-500 font-medium">Explore Gallery</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 추가 정보 -->
+            <div class="mt-8 text-center">
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h3 class="text-sm font-semibold text-blue-900 mb-2">What's Next?</h3>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>🎨 Share your artwork with the community</li>
+                        <li>👥 Follow your favorite artists</li>
+                        <li>❤️ Like and comment on amazing works</li>
+                        <li>🌍 Connect with art lovers worldwide</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 푸터 -->
+        <footer class="mt-auto py-3">
+            <div class="flex flex-col items-center justify-center gap-1">
+                <div class="flex items-center gap-2 text-[#6a7581]">
+                    <div class="size-3">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    <span class="text-sm font-medium">GaNaDa</span>
+                </div>
+                <p class="text-[#6a7581] text-xs text-center leading-tight">
+                    © 2025 UJUSOL. All rights reserved.
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function goToLogin() {
+            window.location.href = 'login.html?confirmed=true';
+        }
+
+        // 자동으로 3초 후 로그인 페이지로 이동 (선택사항)
+        // setTimeout(() => {
+        //     goToLogin();
+        // }, 3000);
+
+        // 페이지 로드 시 축하 애니메이션 (선택사항)
+        document.addEventListener('DOMContentLoaded', function() {
+            // 성공 아이콘에 간단한 애니메이션 추가
+            const successIcon = document.querySelector('svg.text-green-500');
+            if (successIcon) {
+                successIcon.style.transform = 'scale(0)';
+                successIcon.style.transition = 'transform 0.5s ease-out';
+                setTimeout(() => {
+                    successIcon.style.transform = 'scale(1)';
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html> 

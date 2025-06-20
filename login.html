@@ -339,6 +339,34 @@
             }
         }
 
+        function showEmailConfirmedWelcome() {
+            // 환영 메시지를 임시로 표시
+            const welcomeDiv = document.createElement('div');
+            welcomeDiv.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-lg z-50';
+            welcomeDiv.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="font-medium">Email confirmed! You can now log in to GaNaDa.</span>
+                </div>
+            `;
+            
+            document.body.appendChild(welcomeDiv);
+            
+            // 5초 후 자동으로 제거
+            setTimeout(() => {
+                if (welcomeDiv.parentNode) {
+                    welcomeDiv.parentNode.removeChild(welcomeDiv);
+                }
+            }, 5000);
+
+            // URL에서 confirmed 파라미터 제거
+            const url = new URL(window.location);
+            url.searchParams.delete('confirmed');
+            window.history.replaceState({}, document.title, url);
+        }
+
         // 이미 로그인된 사용자 확인
         document.addEventListener('DOMContentLoaded', function() {
             const user = localStorage.getItem('ganada-user');
@@ -349,6 +377,12 @@
                     window.location.href = 'index.html';
                     return;
                 }
+            }
+
+            // 이메일 확인 완료 상태 체크
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('confirmed') === 'true') {
+                showEmailConfirmedWelcome();
             }
 
             // Enter 키로 폼 제출
