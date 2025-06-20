@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
 </head>
 <body>
     <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden" style="font-family: 'Plus Jakarta Sans', 'Noto Sans', sans-serif;">
@@ -221,53 +223,52 @@
             }
         });
 
-        function performSignup(username, email, password) {
+        async function performSignup(username, email, password) {
             const submitBtn = document.getElementById('signup-btn');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="truncate">회원가입 중...</span>';
 
-            // Simulate API call
-            setTimeout(() => {
+            try {
+                // Supabase 회원가입
+                const result = await SupabaseClient.Auth.signUp(email, password, {
+                    username: username,
+                    full_name: username
+                });
+
+                if (result.success) {
+                    // 회원가입 성공
+                    console.log('Signup successful:', result.data);
+                    
+                    // 사용자 프로필 생성
+                    if (result.data.user) {
+                        const profileResult = await SupabaseClient.Database.upsertUserProfile(result.data.user.id, {
+                            email: email,
+                            username: username,
+                            full_name: username,
+                            avatar_url: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
+                            bio: '',
+                            followers_count: 0,
+                            following_count: 0,
+                            posts_count: 0
+                        });
+
+                        if (profileResult.success) {
+                            console.log('Profile created:', profileResult.data);
+                        }
+                    }
+                    
+                    showSuccessModal();
+                } else {
+                    // 회원가입 실패
+                    showErrorModal(result.error);
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                showErrorModal('회원가입 중 오류가 발생했습니다.');
+            } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<span class="truncate">회원가입</span>';
-
-                // Check if username or email already exists (simulation)
-                const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
-                const userExists = existingUsers.some(user => 
-                    user.username === username || user.email === email
-                );
-
-                if (userExists) {
-                    showErrorModal('이미 존재하는 사용자명 또는 이메일입니다.');
-                    return;
-                }
-
-                // Save new user
-                const newUser = {
-                    id: Date.now(),
-                    username,
-                    email,
-                    password, // In real app, this should be hashed
-                    createdAt: new Date().toISOString(),
-                    profile: {
-                        displayName: username,
-                        bio: '',
-                        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
-                        followers: 0,
-                        following: 0,
-                        posts: 0
-                    }
-                };
-
-                existingUsers.push(newUser);
-                localStorage.setItem('users', JSON.stringify(existingUsers));
-
-                // Auto login
-                localStorage.setItem('currentUser', JSON.stringify(newUser));
-                localStorage.setItem('isLoggedIn', 'true');
-
-                showSuccessModal();
-            }, 1500);
+            }
         }
 
         function showError(elementId, message) {

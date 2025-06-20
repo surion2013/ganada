@@ -12,8 +12,10 @@
     />
             <title>GaNaDa - 로그인</title>
         <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script src="navigation.js"></script>
+                <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="supabase-client.js"></script>
+        <script src="navigation.js"></script>
   </head>
   <body>
     <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
@@ -130,7 +132,7 @@
     </div>
 
     <script>
-        function handleLogin(event) {
+        async function handleLogin(event) {
             event.preventDefault();
             
             const username = document.getElementById('username').value;
@@ -141,27 +143,21 @@
             loginButton.innerHTML = 'Logging in...';
             loginButton.disabled = true;
 
-            // 로그인 시뮬레이션
-            setTimeout(() => {
-                // 데모용 계정 검증
-                const validAccounts = [
-                    { username: 'demo', password: 'demo123' },
-                    { username: 'artist@ganada.com', password: 'password' },
-                    { username: 'user1', password: '123456' }
-                ];
-
-                const isValidLogin = validAccounts.some(account => 
-                    (account.username === username || account.username === username.toLowerCase()) && 
-                    account.password === password
-                );
-
-                // 버튼 상태 복원
-                loginButton.innerHTML = 'Log in';
-                loginButton.disabled = false;
-
-                if (isValidLogin || username === 'admin') {
+            try {
+                // 이메일 형식인지 확인 (username이 이메일이 아니면 @ganada.com 추가)
+                const email = username.includes('@') ? username : `${username}@ganada.com`;
+                
+                // Supabase 로그인
+                const result = await SupabaseClient.Auth.signIn(email, password);
+                
+                if (result.success) {
                     // 로그인 성공
+                    console.log('Login successful:', result.data);
+                    
+                    // 사용자 정보를 localStorage에 저장
                     localStorage.setItem('ganada-user', JSON.stringify({
+                        id: result.data.user.id,
+                        email: result.data.user.email,
                         username: username,
                         loginTime: new Date().toISOString(),
                         isLoggedIn: true
@@ -169,10 +165,38 @@
                     
                     document.getElementById('success-modal').classList.remove('hidden');
                 } else {
-                    // 로그인 실패
+                    // 로그인 실패 - 데모 계정 시도
+                    if (username === 'demo' && password === 'demo123') {
+                        // 데모 계정 자동 생성 및 로그인
+                        const demoEmail = 'demo@ganada.com';
+                        const demoPassword = 'demo123456';
+                        
+                        const signUpResult = await SupabaseClient.Auth.signUp(demoEmail, demoPassword, {
+                            username: 'demo',
+                            full_name: 'Demo User'
+                        });
+                        
+                        if (signUpResult.success) {
+                            document.getElementById('error-message').textContent = 
+                                '데모 계정이 생성되었습니다. 이메일을 확인하고 계정을 활성화해주세요.';
+                        } else {
+                            document.getElementById('error-message').textContent = 
+                                '데모 계정 생성 실패: ' + signUpResult.error;
+                        }
+                    } else {
+                        document.getElementById('error-message').textContent = result.error;
+                    }
                     document.getElementById('error-modal').classList.remove('hidden');
                 }
-            }, 1500);
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('error-message').textContent = '로그인 중 오류가 발생했습니다.';
+                document.getElementById('error-modal').classList.remove('hidden');
+            } finally {
+                // 버튼 상태 복원
+                loginButton.innerHTML = 'Log in';
+                loginButton.disabled = false;
+            }
         }
 
         function goToHome() {

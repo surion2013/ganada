@@ -12,6 +12,8 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
     <script src="navigation.js"></script>
   </head>
   <body>
@@ -198,7 +200,7 @@
         closeAltTextModal();
       }
 
-      function sharePost() {
+      async function sharePost() {
         const caption = document.getElementById('caption-input').value;
         const location = document.getElementById('location-input').value;
         const commentsDisabled = document.getElementById('commenting-toggle').checked;
@@ -208,38 +210,73 @@
           return;
         }
 
+        // 현재 사용자 확인
+        const currentUser = JSON.parse(localStorage.getItem('ganada-user') || '{}');
+        if (!currentUser.id) {
+          alert('로그인이 필요합니다.');
+          window.location.href = 'login.html';
+          return;
+        }
+
         // Simulate posting process
         const shareButton = document.getElementById('share-button');
         shareButton.innerHTML = '<span class="truncate">Sharing...</span>';
         shareButton.disabled = true;
 
-        setTimeout(() => {
+        try {
+          // 이미지를 Blob으로 변환
+          const response = await fetch(selectedImage);
+          const blob = await response.blob();
+          const file = new File([blob], 'post-image.jpg', { type: 'image/jpeg' });
+
+          // 이미지 업로드
+          const uploadResult = await SupabaseClient.Storage.uploadImage(file, 'posts');
+          
+          if (!uploadResult.success) {
+            throw new Error('이미지 업로드 실패: ' + uploadResult.error);
+          }
+
+          // 포스트 데이터 생성
+          const postData = {
+            user_id: currentUser.id,
+            image_url: uploadResult.url,
+            image_path: uploadResult.path,
+            caption: caption,
+            location: location,
+            alt_text: altText,
+            comments_disabled: commentsDisabled,
+            likes_count: 0,
+            comments_count: 0
+          };
+
+          // 포스트 저장
+          const createResult = await SupabaseClient.Database.createPost(postData);
+          
+          if (createResult.success) {
+            console.log('Post created:', createResult.data);
+            
+            // Show success modal
+            document.getElementById('success-modal').classList.remove('hidden');
+            
+            // localStorage에도 저장 (호환성을 위해)
+            const posts = JSON.parse(localStorage.getItem('ganada-posts') || '[]');
+            posts.unshift({
+              ...postData,
+              id: createResult.data[0].id,
+              timestamp: createResult.data[0].created_at
+            });
+            localStorage.setItem('ganada-posts', JSON.stringify(posts));
+          } else {
+            throw new Error('포스트 생성 실패: ' + createResult.error);
+          }
+        } catch (error) {
+          console.error('Share post error:', error);
+          alert('포스트 공유 중 오류가 발생했습니다: ' + error.message);
+        } finally {
           // Reset button
           shareButton.innerHTML = '<span class="truncate">Share</span>';
           shareButton.disabled = false;
-          
-          // Show success modal
-          document.getElementById('success-modal').classList.remove('hidden');
-          
-          // Store post data (in real app, this would go to a server)
-          const postData = {
-            image: selectedImage,
-            caption: caption,
-            location: location,
-            altText: altText,
-            commentsDisabled: commentsDisabled,
-            timestamp: new Date().toISOString(),
-            likes: 0,
-            comments: []
-          };
-          
-          // Save to localStorage for demo purposes
-          const posts = JSON.parse(localStorage.getItem('ganada-posts') || '[]');
-          posts.unshift(postData);
-          localStorage.setItem('ganada-posts', JSON.stringify(posts));
-          
-          console.log('Post created:', postData);
-        }, 2000);
+        }
       }
 
       function goToHome() {
