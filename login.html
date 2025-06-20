@@ -164,6 +164,35 @@
         </div>
     </div>
 
+    <!-- 회원가입 제안 모달 -->
+    <div id="signup-suggestion-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 text-center">
+            <div class="mb-4">
+                <svg class="mx-auto h-12 w-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Account Not Found</h3>
+            <p class="text-gray-600 text-sm mb-4">
+                We couldn't find an account with this email address. Would you like to create a new account and join the GaNaDa art community?
+            </p>
+            <div class="space-y-3">
+                <button
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-white bg-blue-600 hover:bg-blue-700 font-medium"
+                    onclick="goToSignUp()"
+                >
+                    Create New Account
+                </button>
+                <button
+                    class="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 font-medium"
+                    onclick="closeSignUpSuggestionModal()"
+                >
+                    Try Different Email
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         async function handleLogin(event) {
             event.preventDefault();
@@ -200,9 +229,16 @@
                         showEmailConfirmationModal(result.data.user.email);
                     }
                 } else {
-                    // 로그인 실패
-                    document.getElementById('error-message').textContent = result.error;
-                    document.getElementById('error-modal').classList.remove('hidden');
+                    // 로그인 실패 - 에러 타입에 따라 다른 처리
+                    if (result.error.includes('Invalid login credentials') || 
+                        result.error.includes('Email not confirmed')) {
+                        // 계정이 없거나 잘못된 자격증명
+                        showSignUpSuggestionModal();
+                    } else {
+                        // 기타 로그인 오류
+                        document.getElementById('error-message').textContent = result.error;
+                        document.getElementById('error-modal').classList.remove('hidden');
+                    }
                 }
             } catch (error) {
                 console.error('Login error:', error);
@@ -283,6 +319,26 @@
             }
         }
 
+        function showSignUpSuggestionModal() {
+            document.getElementById('signup-suggestion-modal').classList.remove('hidden');
+        }
+
+        function closeSignUpSuggestionModal() {
+            document.getElementById('signup-suggestion-modal').classList.add('hidden');
+            // 포커스를 이메일 입력란으로 이동
+            document.getElementById('email').focus();
+        }
+
+        function goToSignUp() {
+            // 현재 입력된 이메일을 URL 파라미터로 전달
+            const email = document.getElementById('email').value;
+            if (email) {
+                window.location.href = `signup.html?email=${encodeURIComponent(email)}`;
+            } else {
+                window.location.href = 'signup.html';
+            }
+        }
+
         // 이미 로그인된 사용자 확인
         document.addEventListener('DOMContentLoaded', function() {
             const user = localStorage.getItem('ganada-user');
@@ -316,6 +372,9 @@
             }
             if (e.target.id === 'email-confirmation-modal') {
                 closeEmailConfirmationModal();
+            }
+            if (e.target.id === 'signup-suggestion-modal') {
+                closeSignUpSuggestionModal();
             }
         });
 
