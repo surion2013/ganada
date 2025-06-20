@@ -1,0 +1,238 @@
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800"
+    />
+
+    <title>GaNaDa - 프로필</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  </head>
+  <body>
+    <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+      <div class="layout-container flex h-full grow flex-col">
+        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f1f2f4] px-10 py-3">
+          <div class="flex items-center gap-4 text-[#121416]">
+            <div class="size-4">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path></svg>
+            </div>
+            <h2 class="text-[#121416] text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
+          </div>
+          <div class="flex flex-1 justify-end gap-8">
+            <label class="flex flex-col min-w-40 !h-10 max-w-64">
+              <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
+                <div
+                  class="text-[#6a7581] flex border-none bg-[#f1f2f4] items-center justify-center pl-4 rounded-l-xl border-r-0"
+                  data-icon="MagnifyingGlass"
+                  data-size="24px"
+                  data-weight="regular"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                    <path
+                      d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
+                    ></path>
+                  </svg>
+                </div>
+                <input
+                  placeholder="Search"
+                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border-none bg-[#f1f2f4] focus:border-none h-full placeholder:text-[#6a7581] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
+                  value=""
+                />
+              </div>
+            </label>
+            <button
+              class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 bg-[#f1f2f4] text-[#121416] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
+              onclick="window.location.href='create.html'"
+            >
+              <div class="text-[#121416]" data-icon="Plus" data-size="20px" data-weight="regular">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
+                </svg>
+              </div>
+            </button>
+            <div
+              class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer"
+              style='background-image: url("https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=100&h=100&fit=crop&crop=face");'
+              onclick="window.location.href='profile.html'"
+            ></div>
+          </div>
+        </header>
+        <div class="px-40 flex flex-1 justify-center py-5">
+          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <div class="flex p-4 @container">
+              <div class="flex w-full flex-col gap-4 items-center">
+                <div class="flex gap-4 flex-col items-center">
+                  <div
+                    class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32"
+                    style='background-image: url("https://images.unsplash.com/photo-1494790108755-2616b612b619?w=200&h=200&fit=crop&crop=face");'
+                  ></div>
+                  <div class="flex flex-col items-center justify-center justify-center">
+                    <p class="text-[#121416] text-[22px] font-bold leading-tight tracking-[-0.015em] text-center">Sophia Bennett</p>
+                    <p class="text-[#6a7581] text-base font-normal leading-normal text-center">Digital Artist at GaNaDa</p>
+                    <p class="text-[#6a7581] text-base font-normal leading-normal text-center">1,234 followers · 567 posts</p>
+                  </div>
+                </div>
+                <button
+                  class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] @[480px]:w-auto"
+                  id="follow-btn"
+                  onclick="toggleFollow()"
+                >
+                  <span class="truncate" id="follow-text">Follow</span>
+                </button>
+              </div>
+            </div>
+            <div class="pb-3">
+              <div class="flex border-b border-[#dde0e3] px-4 justify-between">
+                <a class="flex flex-col items-center justify-center border-b-[3px] border-b-[#121416] text-[#121416] pb-[13px] pt-4 flex-1" href="#" id="posts-tab" onclick="switchTab('posts')">
+                  <p class="text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]">Posts</p>
+                </a>
+                <a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#6a7581] pb-[13px] pt-4 flex-1" href="#" id="tagged-tab" onclick="switchTab('tagged')">
+                  <p class="text-[#6a7581] text-sm font-bold leading-normal tracking-[0.015em]">Tagged</p>
+                </a>
+              </div>
+            </div>
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4" id="posts-grid">
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4 hidden" id="tagged-grid">
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-xl"
+                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let isFollowing = false;
+      let followerCount = 1234;
+
+      function toggleFollow() {
+        const followBtn = document.getElementById('follow-btn');
+        const followText = document.getElementById('follow-text');
+        const followerDisplay = document.querySelector('.text-center:nth-child(3)');
+        
+        if (isFollowing) {
+          followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] @[480px]:w-auto';
+          followText.textContent = 'Follow';
+          followerCount--;
+          isFollowing = false;
+        } else {
+          followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#b2cae5] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] @[480px]:w-auto';
+          followText.textContent = 'Following';
+          followerCount++;
+          isFollowing = true;
+        }
+        
+        followerDisplay.textContent = `${followerCount.toLocaleString()} followers · 567 posts`;
+      }
+
+      function switchTab(tab) {
+        const postsTab = document.getElementById('posts-tab');
+        const taggedTab = document.getElementById('tagged-tab');
+        const postsGrid = document.getElementById('posts-grid');
+        const taggedGrid = document.getElementById('tagged-grid');
+        
+        if (tab === 'posts') {
+          // Posts 탭 활성화
+          postsTab.className = 'flex flex-col items-center justify-center border-b-[3px] border-b-[#121416] text-[#121416] pb-[13px] pt-4 flex-1';
+          postsTab.querySelector('p').className = 'text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]';
+          
+          // Tagged 탭 비활성화
+          taggedTab.className = 'flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#6a7581] pb-[13px] pt-4 flex-1';
+          taggedTab.querySelector('p').className = 'text-[#6a7581] text-sm font-bold leading-normal tracking-[0.015em]';
+          
+          // 그리드 표시/숨김
+          postsGrid.classList.remove('hidden');
+          taggedGrid.classList.add('hidden');
+        } else {
+          // Tagged 탭 활성화
+          taggedTab.className = 'flex flex-col items-center justify-center border-b-[3px] border-b-[#121416] text-[#121416] pb-[13px] pt-4 flex-1';
+          taggedTab.querySelector('p').className = 'text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]';
+          
+          // Posts 탭 비활성화
+          postsTab.className = 'flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#6a7581] pb-[13px] pt-4 flex-1';
+          postsTab.querySelector('p').className = 'text-[#6a7581] text-sm font-bold leading-normal tracking-[0.015em]';
+          
+          // 그리드 표시/숨김
+          taggedGrid.classList.remove('hidden');
+          postsGrid.classList.add('hidden');
+        }
+      }
+    </script>
+  </body>
+</html> 

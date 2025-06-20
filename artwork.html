@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaNaDa - 작품 상세</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+</head>
+<body>
+    <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden" style="font-family: 'Plus Jakarta Sans', 'Noto Sans', sans-serif;">
+        <div class="layout-container flex h-full grow flex-col">
+            <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f1f2f4] px-10 py-3">
+                <div class="flex items-center gap-4 text-[#121416]">
+                    <div class="size-4">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-[#121416] text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
+                </div>
+                <div class="flex flex-1 justify-end gap-8">
+                    <label class="flex flex-col min-w-40 !h-10 max-w-64">
+                        <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
+                            <div class="text-[#6a7581] flex border-none bg-[#f1f2f4] items-center justify-center pl-4 rounded-l-xl border-r-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                                    <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+                                </svg>
+                            </div>
+                            <input placeholder="검색" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border-none bg-[#f1f2f4] focus:border-none h-full placeholder:text-[#6a7581] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" onclick="window.location.href='search.html'">
+                        </div>
+                    </label>
+                    <button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 bg-[#f1f2f4] text-[#121416] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5" onclick="window.location.href='create-post.html'">
+                        <div class="text-[#121416]">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                                <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer" style="background-image: url('https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=100&h=100&fit=crop&crop=face')" onclick="window.location.href='profile.html'"></div>
+                </div>
+            </header>
+            <div class="px-40 flex flex-1 justify-center py-5">
+                <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+                    <div class="flex w-full grow bg-white @container p-4">
+                        <div class="w-full gap-1 overflow-hidden bg-white @[480px]:gap-2 aspect-[3/2] rounded-xl flex">
+                            <div class="w-full bg-center bg-no-repeat bg-cover aspect-auto rounded-xl flex-1" style="background-image: url('https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=533&fit=crop')"></div>
+                        </div>
+                    </div>
+                    <h3 class="text-[#121416] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">김예린 작가</h3>
+                    <p class="text-[#121416] text-base font-normal leading-normal pb-3 pt-1 px-4">추상 미술 작품, 생동감 넘치는 색채, 역동적인 구성, 감정과 움직임을 불러일으킵니다.</p>
+                    <div class="flex flex-wrap gap-4 px-4 py-2">
+                        <div class="flex items-center justify-center gap-2 px-3 py-2 cursor-pointer" onclick="toggleLike()">
+                            <div class="text-[#6a7581]" id="heart-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                                    <path d="M178,32c-20.65,0-38.73,8.88-50,23.89C116.73,40.88,98.65,32,78,32A62.07,62.07,0,0,0,16,94c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,220.66,240,164,240,94A62.07,62.07,0,0,0,178,32ZM128,206.8C109.74,196.16,32,147.69,32,94A46.06,46.06,0,0,1,78,48c19.45,0,35.78,10.36,42.6,27a8,8,0,0,0,14.8,0c6.82-16.67,23.15-27,42.6-27a46.06,46.06,0,0,1,46,46C224,147.61,146.24,196.15,128,206.8Z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-[#6a7581] text-[13px] font-bold leading-normal tracking-[0.015em]" id="like-count">123</p>
+                        </div>
+                        <div class="flex items-center justify-center gap-2 px-3 py-2 cursor-pointer">
+                            <div class="text-[#6a7581]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                                    <path d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128ZM84,116a12,12,0,1,0,12,12A12,12,0,0,0,84,116Zm88,0a12,12,0,1,0,12,12A12,12,0,0,0,172,116Zm60,12A104,104,0,0,1,79.12,219.82L45.07,231.17a16,16,0,0,1-20.24-20.24l11.35-34.05A104,104,0,1,1,232,128Zm-16,0A88,88,0,1,0,51.81,172.06a8,8,0,0,1,.66,6.54L40,216,77.4,203.53a7.85,7.85,0,0,1,2.53-.42,8,8,0,0,1,4,1.08A88,88,0,0,0,216,128Z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-[#6a7581] text-[13px] font-bold leading-normal tracking-[0.015em]" id="comment-count">45</p>
+                        </div>
+                        <div class="flex items-center justify-center gap-2 px-3 py-2 cursor-pointer">
+                            <div class="text-[#6a7581]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                                    <path d="M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.42,29.84l85.62,40.55,40.55,85.62A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14L118.42,148.9l47.24-47.25a8,8,0,0,0-11.31-11.31L107.1,137.58,24,98.22l.14,0L216,40Z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-[#6a7581] text-[13px] font-bold leading-normal tracking-[0.015em]">67</p>
+                        </div>
+                    </div>
+                    <h3 class="text-[#121416] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">댓글</h3>
+                    <div id="comments-container">
+                        <div class="flex w-full flex-row items-start justify-start gap-3 p-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b619?w=100&h=100&fit=crop&crop=face')"></div>
+                            <div class="flex h-full flex-1 flex-col items-start justify-start">
+                                <div class="flex w-full flex-row items-start justify-start gap-x-3">
+                                    <p class="text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]">올리비아 하퍼</p>
+                                    <p class="text-[#6a7581] text-sm font-normal leading-normal">2일 전</p>
+                                </div>
+                                <p class="text-[#121416] text-sm font-normal leading-normal">정말 놀라운 작품이네요! 색채와 구성이 숨이 멎을 만큼 아름답습니다.</p>
+                            </div>
+                        </div>
+                        <div class="flex w-full flex-row items-start justify-start gap-3 p-4">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face')"></div>
+                            <div class="flex h-full flex-1 flex-col items-start justify-start">
+                                <div class="flex w-full flex-row items-start justify-start gap-x-3">
+                                    <p class="text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]">리암 포스터</p>
+                                    <p class="text-[#6a7581] text-sm font-normal leading-normal">3일 전</p>
+                                </div>
+                                <p class="text-[#121416] text-sm font-normal leading-normal">이 작품의 추상적인 특성이 마음에 듭니다. 정말 제 마음에 와 닿네요.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center px-4 py-3 gap-3 @container">
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0" style="background-image: url('https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=100&h=100&fit=crop&crop=face')"></div>
+                        <label class="flex flex-col min-w-40 h-12 flex-1">
+                            <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
+                                <input placeholder="댓글을 추가하세요..." class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border-none bg-[#f1f2f4] focus:border-none h-full placeholder:text-[#6a7581] px-4 rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal" id="comment-input" onkeypress="handleCommentSubmit(event)">
+                                <div class="flex border-none bg-[#f1f2f4] items-center justify-center pr-4 rounded-r-xl border-l-0 !pr-2">
+                                    <div class="flex items-center gap-4 justify-end">
+                                        <button class="min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-8 px-4 bg-[#b2cae5] text-[#121416] text-sm font-medium leading-normal hidden @[480px]:block" onclick="submitComment()">
+                                            <span class="truncate">게시</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isLiked = false;
+        let likeCount = 123;
+        let commentCount = 45;
+
+        function toggleLike() {
+            const heartIcon = document.getElementById('heart-icon');
+            const likeCountElement = document.getElementById('like-count');
+            
+            if (isLiked) {
+                heartIcon.style.color = '#6a7581';
+                likeCount--;
+                isLiked = false;
+            } else {
+                heartIcon.style.color = '#ef4444';
+                likeCount++;
+                isLiked = true;
+            }
+            
+            likeCountElement.textContent = likeCount;
+        }
+
+        function submitComment() {
+            const input = document.getElementById('comment-input');
+            const commentText = input.value.trim();
+            
+            if (commentText === '') return;
+            
+            const commentsContainer = document.getElementById('comments-container');
+            const commentCountElement = document.getElementById('comment-count');
+            
+            // 새 댓글 HTML 생성
+            const newComment = document.createElement('div');
+            newComment.className = 'flex w-full flex-row items-start justify-start gap-3 p-4';
+            newComment.innerHTML = `
+                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" style="background-image: url('https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=100&h=100&fit=crop&crop=face')"></div>
+                <div class="flex h-full flex-1 flex-col items-start justify-start">
+                    <div class="flex w-full flex-row items-start justify-start gap-x-3">
+                        <p class="text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]">당신</p>
+                        <p class="text-[#6a7581] text-sm font-normal leading-normal">방금 전</p>
+                    </div>
+                    <p class="text-[#121416] text-sm font-normal leading-normal">${commentText}</p>
+                </div>
+            `;
+            
+            // 댓글 추가
+            commentsContainer.appendChild(newComment);
+            
+            // 댓글 수 증가
+            commentCount++;
+            commentCountElement.textContent = commentCount;
+            
+            // 입력창 초기화
+            input.value = '';
+        }
+
+        function handleCommentSubmit(event) {
+            if (event.key === 'Enter') {
+                submitComment();
+            }
+        }
+    </script>
+</body>
+</html> 

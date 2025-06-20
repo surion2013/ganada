@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - GaNaDa</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+</head>
+<body>
+    <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden" style="font-family: 'Plus Jakarta Sans', 'Noto Sans', sans-serif;">
+        <div class="layout-container flex h-full grow flex-col">
+            <!-- Header -->
+            <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f1f2f4] px-10 py-3">
+                <div class="flex items-center gap-4 text-[#121416]">
+                    <div class="size-4">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-[#121416] text-lg font-bold leading-tight tracking-[-0.015em]">
+                        <a href="index.html">GaNaDa</a>
+                    </h2>
+                </div>
+                <div class="flex flex-1 justify-end gap-8">
+                    <div class="flex items-center gap-9"></div>
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face')" onclick="window.location.href='profile.html'"></div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <div class="px-40 flex flex-1 justify-center py-5">
+                <div class="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
+                    <h2 class="text-[#121416] tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">GaNaDa 회원가입</h2>
+                    
+                    <form id="signup-form">
+                        <!-- Username Field -->
+                        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+                            <label class="flex flex-col min-w-40 flex-1">
+                                <input id="username" type="text" placeholder="사용자명" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border-none bg-[#f1f2f4] focus:border-none h-14 placeholder:text-[#6a7581] p-4 text-base font-normal leading-normal" required>
+                                <span id="username-error" class="text-red-500 text-xs mt-1 hidden"></span>
+                            </label>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+                            <label class="flex flex-col min-w-40 flex-1">
+                                <input id="email" type="email" placeholder="이메일" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border-none bg-[#f1f2f4] focus:border-none h-14 placeholder:text-[#6a7581] p-4 text-base font-normal leading-normal" required>
+                                <span id="email-error" class="text-red-500 text-xs mt-1 hidden"></span>
+                            </label>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+                            <label class="flex flex-col min-w-40 flex-1">
+                                <input id="password" type="password" placeholder="비밀번호" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border-none bg-[#f1f2f4] focus:border-none h-14 placeholder:text-[#6a7581] p-4 text-base font-normal leading-normal" required>
+                                <span id="password-error" class="text-red-500 text-xs mt-1 hidden"></span>
+                            </label>
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+                            <label class="flex flex-col min-w-40 flex-1">
+                                <input id="confirm-password" type="password" placeholder="비밀번호 확인" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border-none bg-[#f1f2f4] focus:border-none h-14 placeholder:text-[#6a7581] p-4 text-base font-normal leading-normal" required>
+                                <span id="confirm-password-error" class="text-red-500 text-xs mt-1 hidden"></span>
+                            </label>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="flex items-center px-4 py-3">
+                            <input id="terms" type="checkbox" class="mr-3 w-4 h-4 text-[#b2cae5] rounded focus:ring-[#b2cae5]" required>
+                            <label for="terms" class="text-[#6a7581] text-sm">
+                                <a href="#" class="text-[#b2cae5] hover:underline">이용약관</a> 및 
+                                <a href="#" class="text-[#b2cae5] hover:underline">개인정보처리방침</a>에 동의합니다
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex px-4 py-3">
+                            <button id="signup-btn" type="submit" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 flex-1 bg-[#b2cae5] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#a0bdd9] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span class="truncate">회원가입</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <p class="text-[#6a7581] text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center">
+                        이미 계정이 있으신가요? 
+                        <a href="login.html" class="text-[#b2cae5] hover:underline">로그인</a>
+                    </p>
+
+                    <!-- Additional Options -->
+                    <div class="px-4 py-3">
+                        <div class="relative flex items-center justify-center">
+                            <div class="border-t border-[#f1f2f4] w-full"></div>
+                            <span class="bg-white px-4 text-[#6a7581] text-sm">또는</span>
+                            <div class="border-t border-[#f1f2f4] w-full"></div>
+                        </div>
+                    </div>
+
+                    <!-- Social Login Options -->
+                    <div class="flex flex-col gap-3 px-4">
+                        <button class="flex items-center justify-center gap-3 h-12 px-4 rounded-xl border border-[#f1f2f4] hover:bg-[#f8f9fa] transition-colors">
+                            <div class="w-5 h-5">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                                </svg>
+                            </div>
+                            <span class="text-[#121416] text-sm font-medium">Google로 계속하기</span>
+                        </button>
+
+                        <button class="flex items-center justify-center gap-3 h-12 px-4 rounded-xl border border-[#f1f2f4] hover:bg-[#f8f9fa] transition-colors">
+                            <div class="w-5 h-5">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/>
+                                </svg>
+                            </div>
+                            <span class="text-[#121416] text-sm font-medium">Facebook으로 계속하기</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#121416] mb-2">회원가입 완료!</h3>
+                    <p class="text-[#6a7581] mb-6">환영합니다! 이제 GaNaDa에서 멋진 작품들을 감상하고 공유해보세요.</p>
+                    <button onclick="closeSuccessModal()" class="w-full bg-[#b2cae5] text-[#121416] font-bold py-3 px-4 rounded-xl hover:bg-[#a0bdd9] transition-colors">
+                        시작하기
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="error-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-[#121416] mb-2">회원가입 실패</h3>
+                    <p id="error-message" class="text-[#6a7581] mb-6">회원가입 중 오류가 발생했습니다. 다시 시도해주세요.</p>
+                    <button onclick="closeErrorModal()" class="w-full bg-[#f1f2f4] text-[#121416] font-bold py-3 px-4 rounded-xl hover:bg-[#e5e7eb] transition-colors">
+                        확인
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form validation and submission
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const terms = document.getElementById('terms').checked;
+
+            // Clear previous errors
+            clearErrors();
+
+            let hasErrors = false;
+
+            // Validate username
+            if (username.length < 3) {
+                showError('username-error', '사용자명은 3자 이상이어야 합니다.');
+                hasErrors = true;
+            } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                showError('username-error', '사용자명은 영문, 숫자, 언더스코어만 사용 가능합니다.');
+                hasErrors = true;
+            }
+
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('email-error', '올바른 이메일 주소를 입력해주세요.');
+                hasErrors = true;
+            }
+
+            // Validate password
+            if (password.length < 6) {
+                showError('password-error', '비밀번호는 6자 이상이어야 합니다.');
+                hasErrors = true;
+            } else if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(password)) {
+                showError('password-error', '비밀번호는 영문과 숫자를 포함해야 합니다.');
+                hasErrors = true;
+            }
+
+            // Validate password confirmation
+            if (password !== confirmPassword) {
+                showError('confirm-password-error', '비밀번호가 일치하지 않습니다.');
+                hasErrors = true;
+            }
+
+            // Validate terms
+            if (!terms) {
+                alert('이용약관에 동의해주세요.');
+                hasErrors = true;
+            }
+
+            if (!hasErrors) {
+                performSignup(username, email, password);
+            }
+        });
+
+        function performSignup(username, email, password) {
+            const submitBtn = document.getElementById('signup-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="truncate">회원가입 중...</span>';
+
+            // Simulate API call
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="truncate">회원가입</span>';
+
+                // Check if username or email already exists (simulation)
+                const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+                const userExists = existingUsers.some(user => 
+                    user.username === username || user.email === email
+                );
+
+                if (userExists) {
+                    showErrorModal('이미 존재하는 사용자명 또는 이메일입니다.');
+                    return;
+                }
+
+                // Save new user
+                const newUser = {
+                    id: Date.now(),
+                    username,
+                    email,
+                    password, // In real app, this should be hashed
+                    createdAt: new Date().toISOString(),
+                    profile: {
+                        displayName: username,
+                        bio: '',
+                        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
+                        followers: 0,
+                        following: 0,
+                        posts: 0
+                    }
+                };
+
+                existingUsers.push(newUser);
+                localStorage.setItem('users', JSON.stringify(existingUsers));
+
+                // Auto login
+                localStorage.setItem('currentUser', JSON.stringify(newUser));
+                localStorage.setItem('isLoggedIn', 'true');
+
+                showSuccessModal();
+            }, 1500);
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+        }
+
+        function clearErrors() {
+            const errorElements = document.querySelectorAll('[id$="-error"]');
+            errorElements.forEach(element => {
+                element.classList.add('hidden');
+                element.textContent = '';
+            });
+        }
+
+        function showSuccessModal() {
+            document.getElementById('success-modal').classList.remove('hidden');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+            window.location.href = 'index.html';
+        }
+
+        function showErrorModal(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-modal').classList.remove('hidden');
+        }
+
+        function closeErrorModal() {
+            document.getElementById('error-modal').classList.add('hidden');
+        }
+
+        // Social login handlers
+        document.querySelectorAll('button').forEach(button => {
+            if (button.textContent.includes('Google') || button.textContent.includes('Facebook')) {
+                button.addEventListener('click', function() {
+                    alert('소셜 로그인 기능은 데모에서 지원되지 않습니다.');
+                });
+            }
+        });
+
+        // Real-time validation
+        document.getElementById('username').addEventListener('blur', function() {
+            const username = this.value.trim();
+            if (username && username.length < 3) {
+                showError('username-error', '사용자명은 3자 이상이어야 합니다.');
+            } else if (username && !/^[a-zA-Z0-9_]+$/.test(username)) {
+                showError('username-error', '사용자명은 영문, 숫자, 언더스코어만 사용 가능합니다.');
+            } else {
+                document.getElementById('username-error').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                showError('email-error', '올바른 이메일 주소를 입력해주세요.');
+            } else {
+                document.getElementById('email-error').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('password').addEventListener('blur', function() {
+            const password = this.value;
+            if (password && password.length < 6) {
+                showError('password-error', '비밀번호는 6자 이상이어야 합니다.');
+            } else if (password && !/(?=.*[a-zA-Z])(?=.*\d)/.test(password)) {
+                showError('password-error', '비밀번호는 영문과 숫자를 포함해야 합니다.');
+            } else {
+                document.getElementById('password-error').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('confirm-password').addEventListener('blur', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            if (confirmPassword && password !== confirmPassword) {
+                showError('confirm-password-error', '비밀번호가 일치하지 않습니다.');
+            } else {
+                document.getElementById('confirm-password-error').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html> 
