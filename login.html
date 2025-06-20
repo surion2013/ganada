@@ -43,12 +43,13 @@
                 <form class="space-y-6" onsubmit="handleLogin(event)">
                     <div>
                         <input
-                            id="username"
-                            name="username"
-                            type="text"
+                            id="email"
+                            name="email"
+                            type="email"
+                            autocomplete="email"
                             required
                             class="appearance-none relative block w-full px-4 py-4 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 text-base bg-gray-50"
-                            placeholder="Username or email"
+                            placeholder="Email"
                         />
                     </div>
 
@@ -137,7 +138,7 @@
         async function handleLogin(event) {
             event.preventDefault();
             
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const loginButton = document.getElementById('login-button');
 
@@ -146,10 +147,7 @@
             loginButton.disabled = true;
 
             try {
-                // 이메일 형식인지 확인 (username이 이메일이 아니면 @ganada.com 추가)
-                const email = username.includes('@') ? username : `${username}@ganada.com`;
-                
-                // Supabase 로그인
+                // Supabase 로그인 (실제 이메일 사용)
                 const result = await SupabaseClient.Auth.signIn(email, password);
                 
                 if (result.success) {
@@ -160,7 +158,6 @@
                     localStorage.setItem('ganada-user', JSON.stringify({
                         id: result.data.user.id,
                         email: result.data.user.email,
-                        username: username,
                         loginTime: new Date().toISOString(),
                         isLoggedIn: true
                     }));
@@ -188,8 +185,8 @@
 
         function closeErrorModal() {
             document.getElementById('error-modal').classList.add('hidden');
-            // 포커스를 사용자명 입력란으로 이동
-            document.getElementById('username').focus();
+            // 포커스를 이메일 입력란으로 이동
+            document.getElementById('email').focus();
         }
 
         // 이미 로그인된 사용자 확인
