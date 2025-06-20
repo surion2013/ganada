@@ -5,7 +5,7 @@ function createNavigation(currentPage = '') {
             <div class="flex items-center gap-4 text-[#111418]">
                 <div class="size-4">
                     <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z" fill="currentColor"></path>
+                        <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
                     </svg>
                 </div>
                 <h2 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
