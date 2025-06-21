@@ -25,138 +25,15 @@
             <div class="flex flex-wrap justify-between gap-3 p-4">
               <p class="text-[#121416] tracking-light text-3xl md:text-[32px] font-bold leading-tight min-w-72">Notifications</p>
             </div>
-            <h3 class="text-[#121416] text-xl md:text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Today</h3>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 cursor-pointer hover:bg-[#f8f9fa] transition-colors" onclick="goToPost('post1')">
-              <div
-                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
-                style='background-image: url("https://images.unsplash.com/photo-1494790108755-2616b612b619?w=150&h=150&fit=crop&crop=face");'
-              ></div>
-              <div class="flex flex-col justify-center flex-1">
-                <p class="text-[#121416] text-lg md:text-base font-medium leading-normal line-clamp-1">3시간 전</p>
-                <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal line-clamp-2"><strong>소피아</strong>님이 회원님의 사진을 좋아합니다</p>
-              </div>
-              <div class="w-10 h-10 bg-[#f1f2f4] rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 cursor-pointer hover:bg-[#f8f9fa] transition-colors" onclick="goToPost('post2')">
-              <div
-                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
-                style='background-image: url("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face");'
-              ></div>
-              <div class="flex flex-col justify-center flex-1">
-                <p class="text-[#121416] text-lg md:text-base font-medium leading-normal line-clamp-1">5시간 전</p>
-                <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal line-clamp-2"><strong>이든</strong>님이 회원님의 사진에 댓글을 남겼습니다</p>
-              </div>
-              <div class="w-10 h-10 bg-[#f1f2f4] rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 cursor-pointer hover:bg-[#f8f9fa] transition-colors" onclick="goToProfile('olivia')">
-              <div
-                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
-                style='background-image: url("https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face");'
-              ></div>
-              <div class="flex flex-col justify-center flex-1">
-                <p class="text-[#121416] text-lg md:text-base font-medium leading-normal line-clamp-1">8시간 전</p>
-                <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal line-clamp-2"><strong>올리비아</strong>님이 회원님을 팔로우하기 시작했습니다</p>
-              </div>
-              <div class="w-10 h-10 bg-[#f1f2f4] rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path>
-                </svg>
-              </div>
-            </div>
-            <h3 class="text-[#121416] text-xl md:text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">This Week</h3>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 cursor-pointer hover:bg-[#f8f9fa] transition-colors" onclick="goToPost('post3')">
-              <div
-                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
-                style='background-image: url("https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face");'
-              ></div>
-              <div class="flex flex-col justify-center flex-1">
-                <p class="text-[#121416] text-base font-medium leading-normal line-clamp-1">1일 전</p>
-                <p class="text-[#6a7581] text-sm font-normal leading-normal line-clamp-2"><strong>리암</strong>님이 회원님의 사진을 좋아합니다</p>
-              </div>
-              <div class="w-10 h-10 bg-[#f1f2f4] rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 cursor-pointer hover:bg-[#f8f9fa] transition-colors" onclick="goToPost('post4')">
-              <div
-                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
-                style='background-image: url("https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face");'
-              ></div>
-              <div class="flex flex-col justify-center flex-1">
-                <p class="text-[#121416] text-base font-medium leading-normal line-clamp-1">2일 전</p>
-                <p class="text-[#6a7581] text-sm font-normal leading-normal line-clamp-2"><strong>에바</strong>님이 회원님의 사진에 댓글을 남겼습니다</p>
-              </div>
-              <div class="w-10 h-10 bg-[#f1f2f4] rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 cursor-pointer hover:bg-[#f8f9fa] transition-colors" onclick="goToProfile('noah')">
-              <div
-                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
-                style='background-image: url("https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face");'
-              ></div>
-              <div class="flex flex-col justify-center flex-1">
-                <p class="text-[#121416] text-base font-medium leading-normal line-clamp-1">3일 전</p>
-                <p class="text-[#6a7581] text-sm font-normal leading-normal line-clamp-2"><strong>노아</strong>님이 회원님을 팔로우하기 시작했습니다</p>
-              </div>
-              <div class="w-10 h-10 bg-[#f1f2f4] rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 cursor-pointer hover:bg-[#f8f9fa] transition-colors" onclick="goToPost('post5')">
-              <div
-                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
-                style='background-image: url("https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&h=150&fit=crop&crop=face");'
-              ></div>
-              <div class="flex flex-col justify-center flex-1">
-                <p class="text-[#121416] text-base font-medium leading-normal line-clamp-1">4일 전</p>
-                <p class="text-[#6a7581] text-sm font-normal leading-normal line-clamp-2"><strong>클라라</strong>님이 회원님의 사진을 좋아합니다</p>
-              </div>
-              <div class="w-10 h-10 bg-[#f1f2f4] rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 cursor-pointer hover:bg-[#f8f9fa] transition-colors" onclick="goToProfile('emma')">
-              <div
-                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
-                style='background-image: url("https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&h=150&fit=crop&crop=face");'
-              ></div>
-              <div class="flex flex-col justify-center flex-1">
-                <p class="text-[#121416] text-base font-medium leading-normal line-clamp-1">5일 전</p>
-                <p class="text-[#6a7581] text-sm font-normal leading-normal line-clamp-2"><strong>엠마</strong>님이 회원님을 팔로우하기 시작했습니다</p>
-              </div>
-              <div class="w-10 h-10 bg-[#f1f2f4] rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path>
-                </svg>
-              </div>
-            </div>
-
-            <!-- 더 많은 알림 로드 버튼 -->
-            <div class="flex justify-center p-4">
-              <button
-                class="flex min-w-[120px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-medium leading-normal hover:bg-[#e4e7ea] transition-colors"
-                onclick="loadMoreNotifications()"
-                id="load-more-btn"
-              >
-                <span class="truncate">더 많은 알림 보기</span>
-              </button>
+            <!-- Notifications will be loaded from Supabase -->
+            <div class="flex flex-col items-center justify-center py-20" id="notifications-container">
+                <div class="text-[#6a7581] mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
+                    </svg>
+                </div>
+                <p class="text-[#6a7581] text-xl md:text-lg font-medium mb-2">새로운 알림이 없습니다</p>
+                <p class="text-[#6a7581] text-base md:text-sm">새로운 활동이 있으면 여기에 표시됩니다</p>
             </div>
           </div>
         </div>

@@ -22,26 +22,20 @@
         <div id="navigation-container"></div>
         <div class="px-4 md:px-40 flex flex-1 justify-center py-5">
           <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div class="flex p-4 @container">
+            <div class="flex p-4 @container" id="profile-header">
+              <!-- Profile will be loaded from Supabase -->
               <div class="flex w-full flex-col gap-4 items-center">
                 <div class="flex gap-4 flex-col items-center">
-                  <div
-                    class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32"
-                    style='background-image: url("https://images.unsplash.com/photo-1494790108755-2616b612b619?w=200&h=200&fit=crop&crop=face");'
-                  ></div>
+                  <div class="bg-gray-200 rounded-full min-h-32 w-32 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48px" height="48px" fill="currentColor" viewBox="0 0 256 256" class="text-gray-400">
+                      <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path>
+                    </svg>
+                  </div>
                   <div class="flex flex-col items-center justify-center justify-center">
-                    <p class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] text-center">Sophia Bennett</p>
-                    <p class="text-[#6a7581] text-lg md:text-base font-normal leading-normal text-center">Digital Artist at GaNaDa</p>
-                    <p class="text-[#6a7581] text-lg md:text-base font-normal leading-normal text-center">1,234 followers · 567 posts</p>
+                    <p class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] text-center">사용자 프로필</p>
+                    <p class="text-[#6a7581] text-lg md:text-base font-normal leading-normal text-center">프로필을 불러오는 중...</p>
                   </div>
                 </div>
-                <button
-                  class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] @[480px]:w-auto"
-                  id="follow-btn"
-                  onclick="toggleFollow()"
-                >
-                  <span class="truncate" id="follow-text">Follow</span>
-                </button>
               </div>
             </div>
             <div class="pb-3">
@@ -55,79 +49,27 @@
               </div>
             </div>
             <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-4 md:gap-3 p-4" id="posts-grid">
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop");'
-                ></div>
+              <!-- Posts will be loaded from Supabase -->
+              <div class="flex flex-col items-center justify-center py-20 col-span-full">
+                <div class="text-[#6a7581] mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M216,42H40A14,14,0,0,0,26,56V200a14,14,0,0,0,14,14H216a14,14,0,0,0,14-14V56A14,14,0,0,0,216,42ZM40,54H216a2,2,0,0,1,2,2V158.2l-26.07-26.07a14,14,0,0,0-19.8,0L147.86,156.4,99.93,108.47a14,14,0,0,0-19.86,0L38,150.55V56A2,2,0,0,1,40,54ZM216,202H40a2,2,0,0,1-2-2V164.69l44.14-44.14a2,2,0,0,1,2.83,0L132.14,167.8a6,6,0,0,0,8.49,0l24.27-24.27a2,2,0,0,1,2.83,0L218,193.86V200A2,2,0,0,1,216,202ZM156,84a10,10,0,1,1,10,10A10,10,0,0,1,156,84Z"></path>
+                  </svg>
+                </div>
+                <p class="text-[#6a7581] text-xl md:text-lg font-medium mb-2">아직 게시된 작품이 없습니다</p>
+                <p class="text-[#6a7581] text-base md:text-sm">첫 번째 작품을 공유해보세요!</p>
               </div>
             </div>
             <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-4 md:gap-3 p-4 hidden" id="tagged-grid">
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
-                ></div>
+              <!-- Tagged posts will be loaded from Supabase -->
+              <div class="flex flex-col items-center justify-center py-20 col-span-full">
+                <div class="text-[#6a7581] mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68A16,16,0,0,0,243.31,136Zm-96,96L48,132.69V48h84.69L232,147.31ZM96,84A12,12,0,1,1,84,72,12,12,0,0,1,96,84Z"></path>
+                  </svg>
+                </div>
+                <p class="text-[#6a7581] text-xl md:text-lg font-medium mb-2">태그된 작품이 없습니다</p>
+                <p class="text-[#6a7581] text-base md:text-sm">다른 사용자가 회원님을 태그하면 여기에 표시됩니다</p>
               </div>
             </div>
           </div>

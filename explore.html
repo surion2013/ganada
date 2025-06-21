@@ -24,127 +24,23 @@
           <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
 
             <h2 class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Explore</h2>
-            <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-4 md:gap-3 p-4">
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=300&fit=crop");'
-                ></div>
-              </div>
-              <div class="flex flex-col gap-3 cursor-pointer" onclick="window.location.href='artwork.html'">
-                <div
-                  class="w-full bg-center bg-no-repeat aspect-square bg-cover"
-                  style='background-image: url("https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=300&fit=crop");'
-                ></div>
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-4 md:gap-3 p-4" id="explore-posts">
+              <!-- Posts will be loaded from Supabase -->
+              <div class="flex flex-col items-center justify-center py-20 col-span-full">
+                <div class="text-[#6a7581] mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+                  </svg>
+                </div>
+                <p class="text-[#6a7581] text-xl md:text-lg font-medium mb-2">탐색할 작품이 없습니다</p>
+                <p class="text-[#6a7581] text-base md:text-sm">새로운 작품들이 곧 업로드될 예정입니다</p>
               </div>
             </div>
             <h2 class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Recommended Artists</h2>
-            <div class="flex overflow-y-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&amp;::-webkit-scrollbar]:hidden">
-              <div class="flex items-stretch p-4 gap-6 md:gap-8">
-                <div class="flex h-full flex-1 flex-col gap-4 text-center rounded-lg min-w-36 md:min-w-32 pt-4 cursor-pointer" onclick="window.location.href='profile.html'">
-                  <div
-                    class="bg-center bg-no-repeat aspect-square bg-cover rounded-full flex flex-col self-center w-full"
-                    style='background-image: url("https://images.unsplash.com/photo-1494790108755-2616b612b619?w=150&h=150&fit=crop&crop=face");'
-                  ></div>
-                  <div>
-                    <p class="text-[#121416] text-lg md:text-base font-medium leading-normal">Clara</p>
-                    <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal">@clara.art</p>
-                  </div>
-                </div>
-                <div class="flex h-full flex-1 flex-col gap-4 text-center rounded-lg min-w-36 md:min-w-32 pt-4 cursor-pointer" onclick="window.location.href='profile.html'">
-                  <div
-                    class="bg-center bg-no-repeat aspect-square bg-cover rounded-full flex flex-col self-center w-full"
-                    style='background-image: url("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face");'
-                  ></div>
-                  <div>
-                    <p class="text-[#121416] text-lg md:text-base font-medium leading-normal">Owen</p>
-                    <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal">@owen.draws</p>
-                  </div>
-                </div>
-                <div class="flex h-full flex-1 flex-col gap-4 text-center rounded-lg min-w-36 md:min-w-32 pt-4 cursor-pointer" onclick="window.location.href='profile.html'">
-                  <div
-                    class="bg-center bg-no-repeat aspect-square bg-cover rounded-full flex flex-col self-center w-full"
-                    style='background-image: url("https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face");'
-                  ></div>
-                  <div>
-                    <p class="text-[#121416] text-lg md:text-base font-medium leading-normal">Isabella</p>
-                    <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal">@isabella.creates</p>
-                  </div>
-                </div>
-                <div class="flex h-full flex-1 flex-col gap-4 text-center rounded-lg min-w-36 md:min-w-32 pt-4 cursor-pointer" onclick="window.location.href='profile.html'">
-                  <div
-                    class="bg-center bg-no-repeat aspect-square bg-cover rounded-full flex flex-col self-center w-full"
-                    style='background-image: url("https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face");'
-                  ></div>
-                  <div>
-                    <p class="text-[#121416] text-lg md:text-base font-medium leading-normal">Noah</p>
-                    <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal">@noah.photos</p>
-                  </div>
-                </div>
-                <div class="flex h-full flex-1 flex-col gap-4 text-center rounded-lg min-w-36 md:min-w-32 pt-4 cursor-pointer" onclick="window.location.href='profile.html'">
-                  <div
-                    class="bg-center bg-no-repeat aspect-square bg-cover rounded-full flex flex-col self-center w-full"
-                    style='background-image: url("https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=150&h=150&fit=crop&crop=face");'
-                  ></div>
-                  <div>
-                    <p class="text-[#121416] text-lg md:text-base font-medium leading-normal">Emma</p>
-                    <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal">@emma.designs</p>
-                  </div>
-                </div>
+            <div class="flex overflow-y-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&amp;::-webkit-scrollbar]:hidden" id="recommended-artists">
+              <!-- Artists will be loaded from Supabase -->
+              <div class="flex items-center justify-center p-4 w-full">
+                <p class="text-[#6a7581] text-base md:text-sm">추천 아티스트를 불러오는 중...</p>
               </div>
             </div>
           </div>
