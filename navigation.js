@@ -75,16 +75,17 @@ function createNavigation(currentPage = '') {
                 ` : ''}
             </div>
             
-            <!-- 데스크톱에서는 기존 구조 유지 -->
-            <div class="hidden md:flex items-center gap-4">
-                <!-- 데스크톱 메뉴 -->
-                <div class="flex items-center gap-9">
-                    <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'home' ? 'font-bold' : ''}" href="index.html">Home</a>
-                    <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'explore' ? 'font-bold' : ''}" href="explore.html">Explore</a>
-                    <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'create' ? 'font-bold' : ''}" href="create-post.html">Create</a>
-                    <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'login' ? 'font-bold' : ''}" href="login.html">Login</a>
-                </div>
-
+            <!-- 데스크톱 메뉴 - 로고 바로 옆에 위치 -->
+            <div class="hidden md:flex items-center gap-9 ml-8">
+                <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'home' ? 'font-bold' : ''}" href="index.html">Home</a>
+                <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'explore' ? 'font-bold' : ''}" href="explore.html">Explore</a>
+                <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'create' ? 'font-bold' : ''}" href="create-post.html">Create</a>
+                <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'login' ? 'font-bold' : ''}" href="login.html">Login</a>
+            </div>
+            
+            <!-- 데스크톱에서 오른쪽 버튼들 -->
+            <div class="hidden md:flex flex-1 justify-end items-center gap-4">
+                <div class="flex items-center gap-4">
                     <button
                         class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 md:h-10 bg-[#f0f2f4] text-[#111418] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
                         onclick="window.location.href='search.html'"
