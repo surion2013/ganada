@@ -16,6 +16,7 @@ function createNavigation(currentPage = '') {
                     <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'explore' ? 'font-bold' : ''}" href="explore.html">Explore</a>
                     <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'create' ? 'font-bold' : ''}" href="create-post.html">Create</a>
                     <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'login' ? 'font-bold' : ''}" href="login.html">Login</a>
+                    <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'signup' ? 'font-bold' : ''}" href="signup.html">Sign Up</a>
                 </div>
                 <div class="flex gap-2 md:gap-4">
                     <button
@@ -41,7 +42,9 @@ function createNavigation(currentPage = '') {
                         </div>
                     </button>
                 </div>
+                ${currentPage !== 'login' && currentPage !== 'signup' ? `
                 <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 md:size-10 cursor-pointer" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face')" onclick="window.location.href='profile.html'"></div>
+                ` : ''}
             </div>
         </header>
     `;

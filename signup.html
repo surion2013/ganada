@@ -15,22 +15,14 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
+    <script src="navigation.js"></script>
 </head>
 <body>
-    <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
-        <!-- 로고 섹션 -->
-        <div class="sm:mx-auto sm:w-full sm:max-w-md">
-            <div class="flex justify-center items-center mb-8">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
-                    <div class="size-6">
-                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="#121416"></path>
-                        </svg>
-                    </div>
-                    <h1 class="text-2xl font-bold text-gray-900">GaNaDa</h1>
-                </div>
-            </div>
-        </div>
+    <div class="relative flex size-full min-h-screen flex-col bg-gray-50 group/design-root overflow-x-hidden" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+        <div class="layout-container flex h-full grow flex-col min-h-screen">
+            <div id="navigation-container"></div>
+            
+            <div class="flex-1 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
 
         <!-- 회원가입 폼 섹션 -->
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
@@ -110,25 +102,10 @@
                     </p>
                 </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- 푸터 -->
-        <footer class="mt-auto py-3">
-            <div class="flex flex-col items-center justify-center gap-1">
-                <div class="flex items-center gap-2 text-[#6a7581]">
-                    <div class="size-3">
-                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
-                        </svg>
-                    </div>
-                    <span class="text-sm font-medium">GaNaDa</span>
                 </div>
-                <p class="text-[#6a7581] text-xs text-center leading-tight">
-                    © 2025 UJUSOL. All rights reserved.
-                </p>
             </div>
-        </footer>
+            <div id="footer-container"></div>
+        </div>
 
         <!-- 성공 모달 -->
         <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
@@ -355,6 +332,9 @@
                 document.getElementById('username').focus();
             }
         });
+
+        // 네비게이션 초기화
+        initNavigation('signup');
     </script>
 </body>
 </html> 
