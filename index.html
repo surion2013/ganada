@@ -105,9 +105,12 @@
             return false;
         }
 
-        // 페이지 로드 시 실행
-        document.addEventListener('DOMContentLoaded', async function() {
+        // 페이지 초기화 함수
+        async function initializePage() {
             try {
+                // 기존 상태 초기화
+                resetPageState();
+                
                 // Supabase 클라이언트가 로드될 때까지 대기
                 const supabaseReady = await waitForSupabase();
                 if (!supabaseReady) {
@@ -130,8 +133,8 @@
                     await loadLatestPosts();
                 }
                 
-                // 무한 스크롤 이벤트 리스너
-                window.addEventListener('scroll', handleScroll);
+                // 무한 스크롤 이벤트 리스너 (중복 방지)
+                setupScrollListener();
                 
             } catch (error) {
                 console.error('페이지 로드 중 오류:', error);
@@ -143,6 +146,61 @@
                 if (loadingElement) {
                     loadingElement.classList.add('hidden');
                 }
+            }
+        }
+
+        // 페이지 상태 초기화
+        function resetPageState() {
+            currentPage = 0;
+            isLoading = false;
+            hasMorePosts = true;
+            currentUser = null;
+            
+            // 기존 콘텐츠 초기화
+            const containers = ['following-posts', 'recommended-posts', 'latest-posts'];
+            containers.forEach(containerId => {
+                const container = document.getElementById(containerId);
+                if (container) {
+                    container.innerHTML = '';
+                }
+            });
+            
+            // 섹션 숨기기
+            const sections = ['following-section', 'recommended-section'];
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.add('hidden');
+                }
+            });
+            
+            // 빈 상태 메시지 숨기기
+            const emptyStates = ['empty-following', 'empty-state'];
+            emptyStates.forEach(stateId => {
+                const state = document.getElementById(stateId);
+                if (state) {
+                    state.classList.add('hidden');
+                }
+            });
+        }
+
+        // 스크롤 이벤트 리스너 설정 (중복 방지)
+        let scrollListenerAdded = false;
+        function setupScrollListener() {
+            if (!scrollListenerAdded) {
+                window.addEventListener('scroll', handleScroll);
+                scrollListenerAdded = true;
+            }
+        }
+
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', initializePage);
+        
+        // 페이지 표시 시 실행 (뒤로가기 등으로 재방문 시)
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                // 페이지가 캐시에서 복원된 경우 다시 초기화
+                initializePage();
             }
         });
 
