@@ -58,7 +58,7 @@
             </div>
             <div class="flex px-4 py-3 justify-end">
               <button
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#b2cae5] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]"
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-orange-500 text-white text-sm font-bold leading-normal tracking-[0.015em]"
                 onclick="sharePost()"
                 id="share-button"
               >
@@ -83,7 +83,7 @@
           <h3 class="text-[#121416] text-lg font-bold mb-2">포스트가 성공적으로 공유되었습니다!</h3>
           <p class="text-[#6a7581] text-sm mb-4">작품이 GaNaDa 커뮤니티에 공유되었습니다.</p>
           <button
-            class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#b2cae5] text-[#121416] text-sm font-bold leading-normal mx-auto"
+            class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-orange-500 text-white text-sm font-bold leading-normal mx-auto"
             onclick="goToHome()"
           >
             홈으로 가기
@@ -189,6 +189,7 @@
         // Simulate posting process
         const shareButton = document.getElementById('share-button');
         shareButton.innerHTML = '<span class="truncate">공유 중...</span>';
+        shareButton.className = 'flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-orange-400 text-white text-sm font-bold leading-normal tracking-[0.015em]';
         shareButton.disabled = true;
 
         try {
@@ -241,6 +242,7 @@
         } finally {
           // Reset button
           shareButton.innerHTML = '<span class="truncate">공유</span>';
+        shareButton.className = 'flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-orange-500 text-white text-sm font-bold leading-normal tracking-[0.015em]';
           shareButton.disabled = false;
         }
       }

@@ -159,6 +159,12 @@ async function handleNotificationsClick() {
 
 // 로그아웃 처리 함수
 async function handleLogout() {
+    // 로그아웃 확인 메시지
+    const confirmLogout = confirm('정말 로그아웃하시겠습니까?');
+    if (!confirmLogout) {
+        return; // 사용자가 취소하면 로그아웃하지 않음
+    }
+    
     try {
         // Supabase 로그아웃
         if (typeof supabase !== 'undefined') {
