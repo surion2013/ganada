@@ -357,17 +357,8 @@
             window.history.replaceState({}, document.title, url);
         }
 
-        // 이미 로그인된 사용자 확인
+        // 이미 로그인된 사용자 확인 (제거됨 - 사용자가 명시적으로 로그인 페이지에 접근할 수 있도록)
         document.addEventListener('DOMContentLoaded', function() {
-            const user = localStorage.getItem('ganada-user');
-            if (user) {
-                const userData = JSON.parse(user);
-                if (userData.isLoggedIn) {
-                    // 이미 로그인된 상태라면 홈으로 리다이렉트
-                    window.location.href = 'index.html';
-                    return;
-                }
-            }
 
             // 이메일 확인 완료 상태 체크
             const urlParams = new URLSearchParams(window.location.search);
