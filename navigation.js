@@ -10,9 +10,9 @@ function createNavigation(currentPage = '') {
                 </div>
                 <h2 class="text-[#111418] text-lg md:text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
             </div>
-            <div class="flex flex-1 justify-end">
+            <div class="flex flex-1 justify-end items-center">
                 <!-- 데스크톱 메뉴 -->
-                <div class="hidden md:flex items-center gap-9 mr-8">
+                <div class="hidden md:flex items-center gap-9">
                     <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'home' ? 'font-bold' : ''}" href="index.html">Home</a>
                     <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'explore' ? 'font-bold' : ''}" href="explore.html">Explore</a>
                     <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'create' ? 'font-bold' : ''}" href="create-post.html">Create</a>
@@ -20,7 +20,7 @@ function createNavigation(currentPage = '') {
                 </div>
                 
                 <!-- 모바일 메뉴 버튼들 -->
-                <div class="flex md:hidden items-center gap-1 mr-2">
+                <div class="flex md:hidden items-center gap-1">
                     <button
                         class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'home' ? 'bg-[#ff8c00] text-white' : 'bg-[#f0f2f4] text-[#111418]'} text-sm font-bold leading-normal tracking-[0.015em]"
                         onclick="window.location.href='index.html'"
@@ -58,7 +58,9 @@ function createNavigation(currentPage = '') {
                         </svg>
                     </button>
                 </div>
-                <div class="flex gap-2 md:gap-4">
+                
+                <!-- 검색 및 알림 버튼들 -->
+                <div class="flex gap-2 md:gap-4 ml-2 md:ml-8">
                     <button
                         class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 md:h-10 bg-[#f0f2f4] text-[#111418] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
                         onclick="window.location.href='search.html'"
