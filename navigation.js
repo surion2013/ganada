@@ -22,7 +22,7 @@ function createNavigation(currentPage = '') {
                 <!-- 모바일 메뉴 버튼들 -->
                 <div class="flex md:hidden items-center gap-1">
                     <button
-                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'home' ? 'bg-[#b2cae5]' : 'bg-[#f0f2f4]'} text-[#111418] text-sm font-bold leading-normal tracking-[0.015em]"
+                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'home' ? 'bg-[#ff8c00]' : 'bg-[#f0f2f4]'} text-[#111418] text-sm font-bold leading-normal tracking-[0.015em]"
                         onclick="window.location.href='index.html'"
                         title="Home"
                     >
@@ -31,16 +31,16 @@ function createNavigation(currentPage = '') {
                         </svg>
                     </button>
                     <button
-                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'explore' ? 'bg-[#b2cae5]' : 'bg-[#f0f2f4]'} text-[#111418] text-sm font-bold leading-normal tracking-[0.015em]"
+                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'explore' ? 'bg-[#ff8c00]' : 'bg-[#f0f2f4]'} text-[#111418] text-sm font-bold leading-normal tracking-[0.015em]"
                         onclick="window.location.href='explore.html'"
                         title="Explore"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                            <path d="M128,64a64,64,0,1,0,64,64A64.07,64.07,0,0,0,128,64Zm0,112a48,48,0,1,1,48-48A48.05,48.05,0,0,1,128,176ZM173.66,90.34a8,8,0,0,1,11.31,11.32l-12,12a8,8,0,0,1-11.31-11.32ZM72,128a8,8,0,0,1-8-8A64.07,64.07,0,0,1,128,56a8,8,0,0,1,0,16A48.05,48.05,0,0,0,80,120,8,8,0,0,1,72,128ZM161.35,185a8,8,0,1,1-14.7,6c-6.84-17.1-18.19-31.11-32.78-40.49a8,8,0,1,1,8.26-13.66C138.87,146.54,152.78,164.23,161.35,185Z"></path>
+                            <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM172.42,99.06l-32,80a8,8,0,0,1-14.84,0l-32-80a8,8,0,0,1,10.42-10.42l80,32a8,8,0,0,1,0,14.84ZM128,132a4,4,0,1,1-4-4A4,4,0,0,1,128,132Z"></path>
                         </svg>
                     </button>
                     <button
-                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'create' ? 'bg-[#b2cae5]' : 'bg-[#f0f2f4]'} text-[#111418] text-sm font-bold leading-normal tracking-[0.015em]"
+                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'create' ? 'bg-[#ff8c00]' : 'bg-[#f0f2f4]'} text-[#111418] text-sm font-bold leading-normal tracking-[0.015em]"
                         onclick="window.location.href='create-post.html'"
                         title="Create"
                     >
@@ -49,7 +49,7 @@ function createNavigation(currentPage = '') {
                         </svg>
                     </button>
                     <button
-                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'login' ? 'bg-[#b2cae5]' : 'bg-[#f0f2f4]'} text-[#111418] text-sm font-bold leading-normal tracking-[0.015em]"
+                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'login' ? 'bg-[#ff8c00]' : 'bg-[#f0f2f4]'} text-[#111418] text-sm font-bold leading-normal tracking-[0.015em]"
                         onclick="window.location.href='login.html'"
                         title="Login"
                     >
@@ -93,17 +93,17 @@ function createNavigation(currentPage = '') {
 // 공통 푸터 컴포넌트
 function createFooter() {
     return `
-        <footer class="border-t border-solid border-t-[#f0f2f4] px-10 py-3 mt-auto">
-            <div class="flex flex-col items-center justify-center gap-1">
-                <div class="flex items-center gap-2 text-[#6a7581]">
-                    <div class="size-3">
+        <footer class="border-t border-solid border-t-[#f0f2f4] px-4 md:px-10 py-2 md:py-3 mt-auto">
+            <div class="flex flex-col items-center justify-center gap-0.5 md:gap-1">
+                <div class="flex items-center gap-1 md:gap-2 text-[#6a7581]">
+                    <div class="size-2.5 md:size-3">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
                         </svg>
                     </div>
-                    <span class="text-sm font-medium">GaNaDa</span>
+                    <span class="text-xs md:text-sm font-medium">GaNaDa</span>
                 </div>
-                <p class="text-[#6a7581] text-xs text-center leading-tight">
+                <p class="text-[#6a7581] text-xs text-center leading-none md:leading-tight">
                     © 2025 UJUSOL. All rights reserved.
                 </p>
             </div>
