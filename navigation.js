@@ -131,7 +131,7 @@ function createFooter() {
 
 // 네비게이션과 푸터를 페이지에 삽입하는 함수
 function initNavigation(currentPage = '') {
-    document.addEventListener('DOMContentLoaded', function() {
+    function insertNavigation() {
         const navContainer = document.getElementById('navigation-container');
         if (navContainer) {
             navContainer.innerHTML = createNavigation(currentPage);
@@ -142,5 +142,12 @@ function initNavigation(currentPage = '') {
         if (footerContainer) {
             footerContainer.innerHTML = createFooter();
         }
-    });
+    }
+
+    // DOM이 이미 로드되었으면 즉시 실행, 아니면 이벤트 리스너 등록
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', insertNavigation);
+    } else {
+        insertNavigation();
+    }
 } 
