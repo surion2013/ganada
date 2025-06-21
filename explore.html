@@ -14,6 +14,8 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
     <script src="navigation.js"></script>
   </head>
   <body>
@@ -23,25 +25,48 @@
         <div class="px-4 md:px-40 flex flex-1 justify-center py-5">
           <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
 
-            <h2 class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Explore</h2>
+            <h2 class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">인기 작품</h2>
+            
+            <!-- 로딩 상태 -->
+            <div id="loading-posts" class="flex items-center justify-center py-20">
+              <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#121416]"></div>
+            </div>
+            
+            <!-- 작품 그리드 -->
             <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-4 md:gap-3 p-4" id="explore-posts">
               <!-- Posts will be loaded from Supabase -->
-              <div class="flex flex-col items-center justify-center py-20 col-span-full">
-                <div class="text-[#6a7581] mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
-                    <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
-                  </svg>
-                </div>
-                <p class="text-[#6a7581] text-xl md:text-lg font-medium mb-2">탐색할 작품이 없습니다</p>
-                <p class="text-[#6a7581] text-base md:text-sm">새로운 작품들이 곧 업로드될 예정입니다</p>
-              </div>
             </div>
-            <h2 class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Recommended Artists</h2>
-            <div class="flex overflow-y-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&amp;::-webkit-scrollbar]:hidden" id="recommended-artists">
-              <!-- Artists will be loaded from Supabase -->
-              <div class="flex items-center justify-center p-4 w-full">
-                <p class="text-[#6a7581] text-base md:text-sm">추천 아티스트를 불러오는 중...</p>
+            
+            <!-- 빈 상태 메시지 -->
+            <div class="hidden flex flex-col items-center justify-center py-20 col-span-full" id="empty-state">
+              <div class="text-[#6a7581] mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+                </svg>
               </div>
+              <p class="text-[#6a7581] text-xl md:text-lg font-medium mb-2">탐색할 작품이 없습니다</p>
+              <p class="text-[#6a7581] text-base md:text-sm">새로운 작품들이 곧 업로드될 예정입니다</p>
+            </div>
+            
+            <!-- 더 불러오기 로딩 -->
+            <div id="loading-more" class="hidden flex items-center justify-center py-8">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#121416]"></div>
+            </div>
+            <h2 class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">추천 아티스트</h2>
+            
+            <!-- 아티스트 로딩 상태 -->
+            <div id="loading-artists" class="flex items-center justify-center p-4">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#121416]"></div>
+            </div>
+            
+            <!-- 추천 아티스트 목록 -->
+            <div class="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden gap-4 px-4 pb-4" id="recommended-artists">
+              <!-- Artists will be loaded from Supabase -->
+            </div>
+            
+            <!-- 아티스트 빈 상태 -->
+            <div class="hidden flex items-center justify-center p-4 w-full" id="empty-artists">
+              <p class="text-[#6a7581] text-base md:text-sm">추천할 아티스트가 없습니다</p>
             </div>
           </div>
         </div>
@@ -50,7 +75,259 @@
     </div>
 
     <script>
-      initNavigation('explore');
+      // 전역 변수
+      let currentPage = 0;
+      let isLoading = false;
+      let hasMorePosts = true;
+      const POSTS_PER_PAGE = 12;
+
+      // 페이지 로드 시 초기화
+      document.addEventListener('DOMContentLoaded', function() {
+        initNavigation('explore');
+        loadPopularPosts();
+        loadRecommendedArtists();
+        setupInfiniteScroll();
+      });
+
+      // 1. 인기순 작품 로딩 (좋아요 수 기준)
+      async function loadPopularPosts(page = 0) {
+        if (isLoading || !hasMorePosts) return;
+        
+        isLoading = true;
+        const loadingElement = page === 0 ? document.getElementById('loading-posts') : document.getElementById('loading-more');
+        const postsContainer = document.getElementById('explore-posts');
+        const emptyState = document.getElementById('empty-state');
+
+        // 로딩 표시
+        if (page === 0) {
+          loadingElement.classList.remove('hidden');
+          emptyState.classList.add('hidden');
+        } else {
+          loadingElement.classList.remove('hidden');
+        }
+
+        try {
+          // Supabase에서 인기 작품 가져오기 (좋아요 수 기준 정렬)
+          const { data: posts, error } = await supabase
+            .from('posts')
+            .select(`
+              *,
+              users (
+                id,
+                username,
+                avatar_url
+              )
+            `)
+            .order('likes_count', { ascending: false })
+            .order('created_at', { ascending: false })
+            .range(page * POSTS_PER_PAGE, (page + 1) * POSTS_PER_PAGE - 1);
+
+          if (error) {
+            console.error('Error loading posts:', error);
+            throw error;
+          }
+
+          // 첫 페이지인 경우 기존 내용 초기화
+          if (page === 0) {
+            postsContainer.innerHTML = '';
+          }
+
+          if (posts && posts.length > 0) {
+            // 작품 카드들 생성
+            posts.forEach(post => {
+              const postElement = createPostCard(post);
+              postsContainer.appendChild(postElement);
+            });
+
+            // 더 가져올 데이터가 있는지 확인
+            hasMorePosts = posts.length === POSTS_PER_PAGE;
+            currentPage = page;
+          } else {
+            hasMorePosts = false;
+            if (page === 0) {
+              emptyState.classList.remove('hidden');
+            }
+          }
+
+        } catch (error) {
+          console.error('Error loading popular posts:', error);
+          if (page === 0) {
+            emptyState.classList.remove('hidden');
+          }
+        } finally {
+          // 로딩 숨기기
+          loadingElement.classList.add('hidden');
+          isLoading = false;
+        }
+      }
+
+      // 작품 카드 생성 함수
+      function createPostCard(post) {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'flex flex-col gap-3 cursor-pointer hover:opacity-80 transition-opacity';
+        postDiv.onclick = () => viewArtwork(post.id);
+
+        postDiv.innerHTML = `
+          <div class="w-full bg-center bg-no-repeat aspect-square bg-cover bg-gray-200" 
+               style="background-image: url('${post.image_url || 'https://via.placeholder.com/300x300?text=No+Image'}')">
+          </div>
+          <div class="flex items-center gap-2 px-2">
+            <div class="w-6 h-6 bg-center bg-no-repeat bg-cover rounded-full bg-gray-300" 
+                 style="background-image: url('${post.users?.avatar_url || 'https://via.placeholder.com/24x24?text=👤'}')">
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-[#121416] truncate">${post.users?.username || 'Unknown'}</p>
+            </div>
+            <div class="flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" fill="currentColor" viewBox="0 0 256 256" class="text-red-500">
+                <path d="M240,94c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,220.66,16,164,16,94A62.07,62.07,0,0,1,78,32c20.65,0,38.73,8.88,50,23.89C139.27,40.88,157.35,32,178,32A62.07,62.07,0,0,1,240,94Z"></path>
+              </svg>
+              <span class="text-xs text-[#6a7581]">${post.likes_count || 0}</span>
+            </div>
+          </div>
+        `;
+
+        return postDiv;
+      }
+
+      // 4. 팔로워 수 기반 추천 아티스트 로딩
+      async function loadRecommendedArtists() {
+        const loadingElement = document.getElementById('loading-artists');
+        const artistsContainer = document.getElementById('recommended-artists');
+        const emptyState = document.getElementById('empty-artists');
+
+        loadingElement.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+
+        try {
+          // Supabase에서 팔로워 수 기준으로 상위 아티스트 가져오기
+          const { data: artists, error } = await supabase
+            .from('users')
+            .select('*')
+            .order('followers_count', { ascending: false })
+            .limit(10);
+
+          if (error) {
+            console.error('Error loading artists:', error);
+            throw error;
+          }
+
+          artistsContainer.innerHTML = '';
+
+          if (artists && artists.length > 0) {
+            artists.forEach(artist => {
+              const artistCard = createArtistCard(artist);
+              artistsContainer.appendChild(artistCard);
+            });
+          } else {
+            emptyState.classList.remove('hidden');
+          }
+
+        } catch (error) {
+          console.error('Error loading recommended artists:', error);
+          emptyState.classList.remove('hidden');
+        } finally {
+          loadingElement.classList.add('hidden');
+        }
+      }
+
+      // 아티스트 카드 생성 함수
+      function createArtistCard(artist) {
+        const artistDiv = document.createElement('div');
+        artistDiv.className = 'flex flex-col items-center p-4 bg-[#f8f9fa] rounded-xl hover:bg-[#f0f2f4] transition-colors cursor-pointer min-w-[140px]';
+        artistDiv.onclick = () => viewProfile(artist.id);
+
+        artistDiv.innerHTML = `
+          <div class="w-16 h-16 bg-center bg-no-repeat bg-cover rounded-full mb-3 bg-gray-300" 
+               style="background-image: url('${artist.avatar_url || 'https://via.placeholder.com/64x64?text=👤'}')">
+          </div>
+          <p class="text-sm font-bold text-[#121416] mb-1 text-center truncate w-full">${artist.username || 'Unknown'}</p>
+          <p class="text-xs text-[#6a7581] mb-2 text-center">팔로워 ${(artist.followers_count || 0).toLocaleString()}명</p>
+          <button class="px-3 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors"
+                  onclick="event.stopPropagation(); followArtist('${artist.id}', this)">
+            팔로우
+          </button>
+        `;
+
+        return artistDiv;
+      }
+
+      // 3. 무한 스크롤 설정
+      function setupInfiniteScroll() {
+        window.addEventListener('scroll', () => {
+          if (isLoading || !hasMorePosts) return;
+
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const windowHeight = window.innerHeight;
+          const documentHeight = document.documentElement.scrollHeight;
+
+          // 페이지 하단에서 200px 전에 다음 페이지 로드
+          if (scrollTop + windowHeight >= documentHeight - 200) {
+            loadPopularPosts(currentPage + 1);
+          }
+        });
+      }
+
+      // 아티스트 팔로우 함수
+      async function followArtist(artistId, buttonElement) {
+        const currentUser = JSON.parse(localStorage.getItem('ganada-user') || '{}');
+        
+        if (!currentUser.id) {
+          alert('팔로우하려면 로그인이 필요합니다.');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        if (currentUser.id === artistId) {
+          alert('자기 자신을 팔로우할 수 없습니다.');
+          return;
+        }
+
+        const originalText = buttonElement.textContent;
+        buttonElement.disabled = true;
+        buttonElement.textContent = '처리 중...';
+
+        try {
+          const result = await SupabaseClient.Database.toggleFollow(currentUser.id, artistId);
+          
+          if (result.success) {
+            if (result.following) {
+              buttonElement.textContent = '팔로잉';
+              buttonElement.className = 'px-3 py-1 text-xs font-medium rounded-lg bg-[#9bb5d9] text-[#121416] hover:bg-[#8aa8d0] transition-colors';
+            } else {
+              buttonElement.textContent = '팔로우';
+              buttonElement.className = 'px-3 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors';
+            }
+          } else {
+            alert('팔로우 처리 중 오류가 발생했습니다.');
+            buttonElement.textContent = originalText;
+          }
+        } catch (error) {
+          console.error('Follow error:', error);
+          alert('팔로우 처리 중 오류가 발생했습니다.');
+          buttonElement.textContent = originalText;
+        } finally {
+          buttonElement.disabled = false;
+        }
+      }
+
+      // 작품 상세 보기
+      function viewArtwork(postId) {
+        window.location.href = `artwork.html?id=${postId}`;
+      }
+
+      // 프로필 보기
+      function viewProfile(userId) {
+        window.location.href = `profile.html?user=${userId}`;
+      }
+
+      // 새로고침 함수 (필요시 사용)
+      function refreshExplore() {
+        currentPage = 0;
+        hasMorePosts = true;
+        loadPopularPosts(0);
+        loadRecommendedArtists();
+      }
     </script>
   </body>
 </html> 
