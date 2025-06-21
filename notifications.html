@@ -7,6 +7,37 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800">
+    <!-- Chrome 확장 프로그램 오류 방지 (최우선 실행) -->
+    <script>
+      (function() {
+        const originalConsoleError = console.error;
+        console.error = function(...args) {
+          const message = args.join(' ');
+          if (!message.includes('chrome-extension://') && 
+              !message.includes('Failed to fetch dynamically imported module')) {
+            originalConsoleError.apply(console, args);
+          }
+        };
+        
+        window.addEventListener('error', function(e) {
+          if (e.filename && e.filename.includes('chrome-extension://')) {
+            e.preventDefault();
+            return true;
+          }
+        }, true);
+        
+        window.addEventListener('unhandledrejection', function(e) {
+          if (e.reason && (e.reason.message || e.reason.toString()).includes('chrome-extension://')) {
+            e.preventDefault();
+            return true;
+          }
+        }, true);
+      })();
+    </script>
+    
+    <script>
+      window.tailwind = { config: { silent: true } };
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
@@ -178,20 +209,8 @@
             try {
                 let query = supabase
                     .from('notifications')
-                    .select(`
-                        *,
-                        sender:users!notifications_sender_id_fkey(
-                            id,
-                            username,
-                            avatar_url
-                        ),
-                        related_post:posts(
-                            id,
-                            image_url,
-                            title
-                        )
-                    `)
-                    .eq('recipient_id', currentUser.id)
+                    .select('*')
+                    .eq('user_id', currentUser.id)
                     .order('created_at', { ascending: false })
                     .range(page * NOTIFICATIONS_PER_PAGE, (page + 1) * NOTIFICATIONS_PER_PAGE - 1);
 
@@ -205,10 +224,31 @@
                 if (error) throw error;
 
                 if (notifications && notifications.length > 0) {
-                    notifications.forEach(notification => {
+                    // 각 알림에 대해 추가 정보 로드
+                    for (let notification of notifications) {
+                        // 발신자 정보 로드
+                        if (notification.related_user_id) {
+                            const { data: sender } = await supabase
+                                .from('users')
+                                .select('id, username, avatar_url')
+                                .eq('id', notification.related_user_id)
+                                .single();
+                            notification.sender = sender;
+                        }
+
+                        // 관련 포스트 정보 로드
+                        if (notification.related_post_id) {
+                            const { data: post } = await supabase
+                                .from('posts')
+                                .select('id, image_url, title')
+                                .eq('id', notification.related_post_id)
+                                .single();
+                            notification.related_post = post;
+                        }
+
                         const notificationElement = createNotificationCard(notification);
                         container.appendChild(notificationElement);
-                    });
+                    }
 
                     hasMoreNotifications = notifications.length === NOTIFICATIONS_PER_PAGE;
                     currentPage = page;
@@ -259,10 +299,26 @@
             }
         }
 
+        // 알림 메시지 생성
+        function getNotificationMessage(notification) {
+            const senderName = notification.sender?.username || '사용자';
+            
+            switch (notification.type) {
+                case 'like':
+                    return `${senderName}님이 회원님의 작품을 좋아합니다`;
+                case 'comment':
+                    return `${senderName}님이 회원님의 작품에 댓글을 남겼습니다`;
+                case 'follow':
+                    return `${senderName}님이 회원님을 팔로우하기 시작했습니다`;
+                default:
+                    return notification.content || '새로운 활동이 있습니다';
+            }
+        }
+
         // 알림 카드 생성
         function createNotificationCard(notification) {
             const div = document.createElement('div');
-            div.className = `notification-item flex items-start gap-4 p-4 border-b border-[#f0f2f4] hover:bg-gray-50 transition-colors cursor-pointer ${!notification.is_read ? 'bg-blue-50' : ''}`;
+            div.className = `notification-item flex items-start gap-4 p-4 border-b border-[#f0f2f4] hover:bg-gray-50 transition-colors cursor-pointer ${!notification.read ? 'bg-blue-50' : ''}`;
             div.dataset.notificationId = notification.id;
             div.onclick = () => handleNotificationClick(notification);
 
@@ -286,8 +342,8 @@
                 <div class="flex-1 min-w-0">
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
-                            <p class="text-sm font-medium text-[#121416] mb-1">${notification.title}</p>
-                            <p class="text-sm text-[#637488] leading-relaxed">${notification.message}</p>
+                            <p class="text-sm font-medium text-[#121416] mb-1">${notification.content || '새로운 알림'}</p>
+                            <p class="text-sm text-[#637488] leading-relaxed">${getNotificationMessage(notification)}</p>
                             <p class="text-xs text-[#9ca3af] mt-2">${formatTimeAgo(notification.created_at)}</p>
                         </div>
                         ${notification.related_post?.image_url ? 
@@ -295,7 +351,7 @@
                             ''
                         }
                     </div>
-                    ${!notification.is_read ? 
+                    ${!notification.read ? 
                         `<div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>` :
                         ''
                     }
@@ -309,7 +365,7 @@
         async function handleNotificationClick(notification) {
             try {
                 // 읽음 처리
-                if (!notification.is_read) {
+                if (!notification.read) {
                     await markAsRead(notification.id);
                 }
 
@@ -332,7 +388,7 @@
             try {
                 const { error } = await supabase
                     .from('notifications')
-                    .update({ is_read: true })
+                    .update({ read: true })
                     .eq('id', notificationId);
 
                 if (error) throw error;
@@ -359,9 +415,9 @@
             try {
                 const { error } = await supabase
                     .from('notifications')
-                    .update({ is_read: true })
-                    .eq('recipient_id', currentUser.id)
-                    .eq('is_read', false);
+                    .update({ read: true })
+                    .eq('user_id', currentUser.id)
+                    .eq('read', false);
 
                 if (error) throw error;
 
@@ -387,8 +443,8 @@
                 const { count, error } = await supabase
                     .from('notifications')
                     .select('*', { count: 'exact', head: true })
-                    .eq('recipient_id', currentUser.id)
-                    .eq('is_read', false);
+                    .eq('user_id', currentUser.id)
+                    .eq('read', false);
 
                 if (error) throw error;
 
@@ -419,7 +475,7 @@
                     event: 'INSERT',
                     schema: 'public',
                     table: 'notifications',
-                    filter: `recipient_id=eq.${currentUser.id}`
+                    filter: `user_id=eq.${currentUser.id}`
                 }, (payload) => {
                     console.log('새로운 알림:', payload.new);
                     handleNewNotification(payload.new);
@@ -428,7 +484,7 @@
                     event: 'UPDATE',
                     schema: 'public',
                     table: 'notifications',
-                    filter: `recipient_id=eq.${currentUser.id}`
+                    filter: `user_id=eq.${currentUser.id}`
                 }, (payload) => {
                     console.log('알림 업데이트:', payload.new);
                     updateUnreadCount();
@@ -443,23 +499,31 @@
                 // 알림 상세 정보 가져오기
                 const { data: fullNotification, error } = await supabase
                     .from('notifications')
-                    .select(`
-                        *,
-                        sender:users!notifications_sender_id_fkey(
-                            id,
-                            username,
-                            avatar_url
-                        ),
-                        related_post:posts(
-                            id,
-                            image_url,
-                            title
-                        )
-                    `)
+                    .select('*')
                     .eq('id', notification.id)
                     .single();
 
                 if (!error && fullNotification) {
+                    // 발신자 정보 로드
+                    if (fullNotification.related_user_id) {
+                        const { data: sender } = await supabase
+                            .from('users')
+                            .select('id, username, avatar_url')
+                            .eq('id', fullNotification.related_user_id)
+                            .single();
+                        fullNotification.sender = sender;
+                    }
+
+                    // 관련 포스트 정보 로드
+                    if (fullNotification.related_post_id) {
+                        const { data: post } = await supabase
+                            .from('posts')
+                            .select('id, image_url, title')
+                            .eq('id', fullNotification.related_post_id)
+                            .single();
+                        fullNotification.related_post = post;
+                    }
+
                     // 맨 위에 새 알림 추가
                     const container = document.getElementById('notifications-container');
                     const notificationElement = createNotificationCard(fullNotification);
