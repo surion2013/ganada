@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaNaDa - 디버그 콘솔</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="min-h-screen bg-white p-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold mb-6">GaNaDa 디버그 콘솔</h1>
+            
+            <div class="mb-6">
+                <button onclick="window.location.href='index.html'" class="px-4 py-2 bg-blue-500 text-white rounded mr-4">
+                    홈페이지로 이동
+                </button>
+                <button onclick="clearLogs()" class="px-4 py-2 bg-red-500 text-white rounded mr-4">
+                    로그 지우기
+                </button>
+                <button onclick="runDiagnostics()" class="px-4 py-2 bg-green-500 text-white rounded">
+                    진단 실행
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 실시간 로그 -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h2 class="text-xl font-bold mb-4">실시간 콘솔 로그</h2>
+                    <div id="console-logs" class="bg-black text-green-400 p-4 rounded font-mono text-sm h-96 overflow-y-auto">
+                        <!-- 로그가 여기에 표시됩니다 -->
+                    </div>
+                </div>
+                
+                <!-- 오류 필터링 -->
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h2 class="text-xl font-bold mb-4">웹사이트 관련 오류만</h2>
+                    <div id="filtered-errors" class="bg-red-900 text-red-200 p-4 rounded font-mono text-sm h-96 overflow-y-auto">
+                        <!-- 필터링된 오류가 여기에 표시됩니다 -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 bg-blue-100 p-4 rounded-lg">
+                <h3 class="text-lg font-bold mb-2">진단 결과</h3>
+                <div id="diagnostics" class="space-y-2">
+                    <!-- 진단 결과가 여기에 표시됩니다 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="supabase-client.js"></script>
+    <script>
+        const consoleLogs = document.getElementById('console-logs');
+        const filteredErrors = document.getElementById('filtered-errors');
+        const diagnostics = document.getElementById('diagnostics');
+
+        // 기존 콘솔 메서드 저장
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn,
+            info: console.info
+        };
+
+        // 콘솔 메서드 오버라이드
+        function interceptConsole() {
+            ['log', 'error', 'warn', 'info'].forEach(method => {
+                console[method] = function(...args) {
+                    // 원본 콘솔 출력
+                    originalConsole[method].apply(console, args);
+                    
+                    // 커스텀 로그 출력
+                    const message = args.map(arg => 
+                        typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                    ).join(' ');
+                    
+                    const timestamp = new Date().toLocaleTimeString();
+                    const logEntry = `[${timestamp}] ${method.toUpperCase()}: ${message}`;
+                    
+                    // 실시간 로그에 추가
+                    addToConsole(logEntry, method);
+                    
+                    // Chrome 확장 프로그램 관련이 아닌 오류만 필터링
+                    if (method === 'error' && !message.includes('chrome-extension://')) {
+                        addToFilteredErrors(logEntry);
+                    }
+                };
+            });
+        }
+
+        function addToConsole(message, type) {
+            const div = document.createElement('div');
+            div.className = getLogClass(type);
+            div.textContent = message;
+            consoleLogs.appendChild(div);
+            consoleLogs.scrollTop = consoleLogs.scrollHeight;
+        }
+
+        function addToFilteredErrors(message) {
+            const div = document.createElement('div');
+            div.className = 'text-red-300 mb-1';
+            div.textContent = message;
+            filteredErrors.appendChild(div);
+            filteredErrors.scrollTop = filteredErrors.scrollHeight;
+        }
+
+        function getLogClass(type) {
+            switch(type) {
+                case 'error': return 'text-red-400 mb-1';
+                case 'warn': return 'text-yellow-400 mb-1';
+                case 'info': return 'text-blue-400 mb-1';
+                default: return 'text-green-400 mb-1';
+            }
+        }
+
+        function clearLogs() {
+            consoleLogs.innerHTML = '';
+            filteredErrors.innerHTML = '';
+            diagnostics.innerHTML = '';
+        }
+
+        async function runDiagnostics() {
+            diagnostics.innerHTML = '<p class="text-blue-600">진단 실행 중...</p>';
+            
+            const results = [];
+            
+            try {
+                // 1. Supabase 연결 테스트
+                if (typeof supabase !== 'undefined') {
+                    results.push('✅ Supabase 클라이언트 로드됨');
+                    
+                    // 인증 테스트
+                    const { data: { user }, error: authError } = await supabase.auth.getUser();
+                    if (authError) {
+                        results.push(`❌ 인증 오류: ${authError.message}`);
+                    } else {
+                        results.push(`✅ 인증 상태: ${user ? '로그인됨' : '비로그인'}`);
+                    }
+                    
+                    // 데이터베이스 연결 테스트
+                    const { data: posts, error: dbError } = await supabase
+                        .from('posts')
+                        .select('id, title')
+                        .limit(1);
+                    
+                    if (dbError) {
+                        results.push(`❌ DB 연결 오류: ${dbError.message}`);
+                    } else {
+                        results.push(`✅ 데이터베이스 연결 성공`);
+                    }
+                } else {
+                    results.push('❌ Supabase 클라이언트 로드 실패');
+                }
+                
+                // 2. DOM 요소 확인
+                const requiredElements = ['main-title', 'latest-posts', 'loading-posts'];
+                requiredElements.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        results.push(`✅ DOM 요소 '${id}' 존재`);
+                    } else {
+                        results.push(`❌ DOM 요소 '${id}' 누락`);
+                    }
+                });
+                
+                // 3. 네트워크 상태 확인
+                if (navigator.onLine) {
+                    results.push('✅ 네트워크 연결됨');
+                } else {
+                    results.push('❌ 네트워크 연결 안됨');
+                }
+                
+                // 4. 로컬 스토리지 접근 테스트
+                try {
+                    localStorage.setItem('test', 'test');
+                    localStorage.removeItem('test');
+                    results.push('✅ 로컬 스토리지 접근 가능');
+                } catch (e) {
+                    results.push(`❌ 로컬 스토리지 오류: ${e.message}`);
+                }
+                
+            } catch (error) {
+                results.push(`❌ 진단 중 오류: ${error.message}`);
+            }
+            
+            diagnostics.innerHTML = results.map(result => 
+                `<p class="${result.startsWith('✅') ? 'text-green-600' : 'text-red-600'}">${result}</p>`
+            ).join('');
+        }
+
+        // 페이지 로드 시 콘솔 인터셉트 시작
+        document.addEventListener('DOMContentLoaded', function() {
+            interceptConsole();
+            console.log('디버그 콘솔이 시작되었습니다.');
+            
+            // 자동 진단 실행
+            setTimeout(runDiagnostics, 1000);
+        });
+
+        // 에러 이벤트 캐치
+        window.addEventListener('error', function(event) {
+            if (!event.filename.includes('chrome-extension://')) {
+                console.error('JavaScript 오류:', event.error);
+            }
+        });
+
+        // Promise rejection 캐치
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('처리되지 않은 Promise 거부:', event.reason);
+        });
+    </script>
+</body>
+</html> 

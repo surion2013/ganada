@@ -193,6 +193,35 @@
             }
         }
 
+        // Chrome 확장 프로그램 오류 필터링
+        const originalConsoleError = console.error;
+        console.error = function(...args) {
+            const message = args.join(' ');
+            // Chrome 확장 프로그램 관련 오류가 아닌 경우에만 출력
+            if (!message.includes('chrome-extension://') && 
+                !message.includes('Failed to fetch dynamically imported module')) {
+                originalConsoleError.apply(console, args);
+            }
+        };
+
+        // 전역 오류 핸들러 (Chrome 확장 프로그램 오류 필터링)
+        window.addEventListener('error', function(event) {
+            if (event.filename && event.filename.includes('chrome-extension://')) {
+                event.preventDefault();
+                return true;
+            }
+        });
+
+        // Promise rejection 핸들러 (Chrome 확장 프로그램 오류 필터링)
+        window.addEventListener('unhandledrejection', function(event) {
+            const reason = event.reason?.toString() || '';
+            if (reason.includes('chrome-extension://') || 
+                reason.includes('Failed to fetch dynamically imported module')) {
+                event.preventDefault();
+                return true;
+            }
+        });
+
         // 페이지 로드 시 실행
         document.addEventListener('DOMContentLoaded', initializePage);
         
