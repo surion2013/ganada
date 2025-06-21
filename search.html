@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
     <script src="navigation.js"></script>
 </head>
 <body>
@@ -82,81 +84,27 @@
         <div id="footer-container"></div>
     </div>
 
-    <script src="supabase-client.js"></script>
     <script>
-        // Search data will be loaded from Supabase
-        let searchData = {
-            top: [],
-            accounts: [],
-            tags: []
-        };
-
         let currentTab = 'top';
+        let currentQuery = '';
+        let currentUser = null;
+        let searchTimeout = null;
 
-        // 로그인 체크 함수
-        function checkLoginForFollow() {
-            const user = JSON.parse(localStorage.getItem('ganada-user') || '{}');
-            if (!user.id) {
-                alert('팔로우하려면 로그인이 필요합니다.');
-                window.location.href = 'login.html';
-                return false;
-            }
-            return true;
-        }
-
-        // 검색 결과에서 팔로우 토글
-        async function toggleFollowFromSearch(userId, buttonElement) {
-            // 로그인 체크
-            if (!checkLoginForFollow()) {
-                return;
-            }
-
-            const currentUser = JSON.parse(localStorage.getItem('ganada-user') || '{}');
-            
-            // 자기 자신을 팔로우할 수 없음
-            if (currentUser.id === userId) {
-                alert('자기 자신을 팔로우할 수 없습니다.');
-                return;
-            }
-
-            // 버튼 상태 저장
-            const originalText = buttonElement.textContent;
-            const isCurrentlyFollowing = originalText === '팔로잉';
-
-            // 버튼 비활성화
-            buttonElement.disabled = true;
-            buttonElement.textContent = '처리 중...';
-
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', async function() {
             try {
-                // Supabase를 통해 팔로우 토글
-                const result = await SupabaseClient.Database.toggleFollow(currentUser.id, userId);
+                // 로그인 상태 확인
+                const { data: { user } } = await supabase.auth.getUser();
+                currentUser = user;
                 
-                if (result.success) {
-                    if (result.following) {
-                        buttonElement.textContent = '팔로잉';
-                        buttonElement.className = 'px-4 py-1 text-xs font-medium rounded-lg bg-[#9bb5d9] text-[#121416] hover:bg-[#8aa8d0] transition-colors';
-                    } else {
-                        buttonElement.textContent = '팔로우';
-                        buttonElement.className = 'px-4 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors';
-                    }
-                } else {
-                    alert('팔로우 처리 중 오류가 발생했습니다.');
-                    buttonElement.textContent = originalText;
-                }
+                // 초기 인기 콘텐츠 로드
+                await loadPopularContent();
+                setupEventListeners();
+                
             } catch (error) {
-                console.error('Follow toggle error:', error);
-                alert('팔로우 처리 중 오류가 발생했습니다.');
-                buttonElement.textContent = originalText;
-            } finally {
-                // 버튼 재활성화
-                buttonElement.disabled = false;
+                console.error('페이지 로드 중 오류:', error);
+                setupEventListeners();
             }
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            loadSearchResults();
-            setupEventListeners();
         });
 
         function setupEventListeners() {
@@ -171,18 +119,37 @@
             // Clear search
             document.getElementById('clear-search').addEventListener('click', function() {
                 document.getElementById('main-search').value = '';
+                currentQuery = '';
+                loadPopularContent();
             });
 
-            // Search input
+            // Search input with debounce
             document.getElementById('main-search').addEventListener('input', function() {
-                const query = this.value;
-                performSearch(query);
+                const query = this.value.trim();
+                currentQuery = query;
+                
+                // 디바운싱: 500ms 후에 검색 실행
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    if (query) {
+                        performSearch(query);
+                    } else {
+                        loadPopularContent();
+                    }
+                }, 500);
             });
 
             // Enter key search
             document.getElementById('main-search').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
-                    performSearch(this.value);
+                    clearTimeout(searchTimeout);
+                    const query = this.value.trim();
+                    currentQuery = query;
+                    if (query) {
+                        performSearch(query);
+                    } else {
+                        loadPopularContent();
+                    }
                 }
             });
         }
@@ -203,71 +170,56 @@
                 p.classList.toggle('text-[#637488]', !isActive);
             });
 
-            loadSearchResults();
+            // 현재 검색어가 있으면 검색, 없으면 인기 콘텐츠 로드
+            if (currentQuery) {
+                performSearch(currentQuery);
+            } else {
+                loadPopularContent();
+            }
         }
 
-        function loadSearchResults() {
+        // 인기 콘텐츠 로드 (검색어가 없을 때)
+        async function loadPopularContent() {
+            const loading = document.getElementById('loading');
             const resultsContainer = document.getElementById('search-results');
             const noResults = document.getElementById('no-results');
-            const loading = document.getElementById('loading');
 
-            // Show loading
             loading.classList.remove('hidden');
             resultsContainer.innerHTML = '';
             noResults.classList.add('hidden');
 
-            setTimeout(() => {
-                loading.classList.add('hidden');
+            try {
+                let data = [];
                 
-                const data = searchData[currentTab] || [];
-                
-                if (data.length === 0) {
-                    noResults.classList.remove('hidden');
-                    return;
+                switch (currentTab) {
+                    case 'top':
+                        data = await loadPopularPosts();
+                        break;
+                    case 'accounts':
+                        data = await loadPopularAccounts();
+                        break;
+                    case 'tags':
+                        data = await loadPopularTags();
+                        break;
                 }
 
-                resultsContainer.innerHTML = data.map(item => {
-                    switch (item.type) {
-                        case 'artwork':
-                            return `
-                                <div class="flex flex-col gap-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="viewArtwork(${item.id})">
-                                    <div class="w-full bg-center bg-no-repeat aspect-square bg-cover" style="background-image: url('${item.image}')"></div>
-                                </div>
-                            `;
-                        case 'account':
-                            return `
-                                <div class="flex flex-col items-center p-4 bg-[#f8f9fa] rounded-xl hover:bg-[#f0f2f4] transition-colors">
-                                    <div class="w-16 h-16 bg-center bg-no-repeat bg-cover rounded-full mb-3 cursor-pointer" style="background-image: url('${item.avatar}')" onclick="viewProfile('${item.username}')"></div>
-                                    <p class="text-sm font-bold text-[#111418] mb-1 cursor-pointer" onclick="viewProfile('${item.username}')">${item.name}</p>
-                                    <p class="text-xs text-[#637488] mb-2 cursor-pointer" onclick="viewProfile('${item.username}')">@${item.username}</p>
-                                    <p class="text-xs text-[#637488] mb-3">팔로워 ${item.followers}</p>
-                                    <button class="px-4 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors" onclick="toggleFollowFromSearch('${item.id}', this)">
-                                        팔로우
-                                    </button>
-                                </div>
-                            `;
-                        case 'tag':
-                            return `
-                                <div class="flex flex-col cursor-pointer hover:opacity-80 transition-opacity" onclick="searchTag('${item.name}')">
-                                    <div class="w-full bg-center bg-no-repeat aspect-square bg-cover mb-3" style="background-image: url('${item.preview}')"></div>
-                                    <p class="text-sm font-bold text-[#111418] mb-1">${item.name}</p>
-                                    <p class="text-xs text-[#637488]">${item.count}개 게시물</p>
-                                </div>
-                            `;
-                        default:
-                            return '';
-                    }
-                }).join('');
-            }, 500);
+                displayResults(data);
+                
+            } catch (error) {
+                console.error('인기 콘텐츠 로드 오류:', error);
+                noResults.classList.remove('hidden');
+            } finally {
+                loading.classList.add('hidden');
+            }
         }
 
-        function performSearch(query) {
+        // 실제 검색 수행
+        async function performSearch(query) {
             if (!query.trim()) {
-                loadSearchResults();
+                loadPopularContent();
                 return;
             }
 
-            // Simulate search
             const loading = document.getElementById('loading');
             const resultsContainer = document.getElementById('search-results');
             const noResults = document.getElementById('no-results');
@@ -276,25 +228,343 @@
             resultsContainer.innerHTML = '';
             noResults.classList.add('hidden');
 
-            setTimeout(() => {
-                loading.classList.add('hidden');
+            try {
+                let data = [];
                 
-                // TODO: Implement real search functionality with Supabase
-                // For now, show empty results
+                switch (currentTab) {
+                    case 'top':
+                        data = await searchPosts(query);
+                        break;
+                    case 'accounts':
+                        data = await searchAccounts(query);
+                        break;
+                    case 'tags':
+                        data = await searchTags(query);
+                        break;
+                }
+
+                displayResults(data);
+                
+            } catch (error) {
+                console.error('검색 오류:', error);
                 noResults.classList.remove('hidden');
-            }, 800);
+            } finally {
+                loading.classList.add('hidden');
+            }
         }
 
+        // 인기 작품 로드
+        async function loadPopularPosts() {
+            const { data: posts, error } = await supabase
+                .from('posts')
+                .select(`
+                    *,
+                    users:user_id (id, username, profile_image_url)
+                `)
+                .order('created_at', { ascending: false })
+                .limit(20);
+
+            if (error) throw error;
+
+            // 각 포스트에 좋아요 수 추가
+            for (let post of posts) {
+                const { count } = await supabase
+                    .from('post_likes')
+                    .select('*', { count: 'exact' })
+                    .eq('post_id', post.id);
+                post.likes_count = count || 0;
+            }
+
+            // 좋아요 수로 정렬
+            posts.sort((a, b) => b.likes_count - a.likes_count);
+
+            return posts.map(post => ({
+                type: 'artwork',
+                id: post.id,
+                image: post.image_url,
+                title: post.title,
+                likes: post.likes_count,
+                user: post.users
+            }));
+        }
+
+        // 인기 계정 로드
+        async function loadPopularAccounts() {
+            const { data: users, error } = await supabase
+                .from('users')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(20);
+
+            if (error) throw error;
+
+            // 각 사용자의 팔로워 수 계산
+            for (let user of users) {
+                const { count } = await supabase
+                    .from('follows')
+                    .select('*', { count: 'exact' })
+                    .eq('following_id', user.id);
+                user.followers_count = count || 0;
+
+                // 현재 사용자가 이 사용자를 팔로우하는지 확인
+                if (currentUser) {
+                    const { data: followData } = await supabase
+                        .from('follows')
+                        .select('id')
+                        .eq('follower_id', currentUser.id)
+                        .eq('following_id', user.id)
+                        .single();
+                    user.is_following = !!followData;
+                }
+            }
+
+            // 팔로워 수로 정렬
+            users.sort((a, b) => b.followers_count - a.followers_count);
+
+            return users.map(user => ({
+                type: 'account',
+                id: user.id,
+                username: user.username,
+                name: user.full_name || user.username,
+                avatar: user.profile_image_url || '/api/placeholder/64/64',
+                followers: user.followers_count,
+                is_following: user.is_following || false
+            }));
+        }
+
+        // 인기 태그 로드 (임시로 더미 데이터)
+        async function loadPopularTags() {
+            // TODO: 실제 태그 시스템 구현 시 교체
+            return [
+                { type: 'tag', name: '#디지털아트', count: 150, preview: '/api/placeholder/200/200' },
+                { type: 'tag', name: '#일러스트', count: 89, preview: '/api/placeholder/200/200' },
+                { type: 'tag', name: '#포토그래피', count: 67, preview: '/api/placeholder/200/200' },
+                { type: 'tag', name: '#추상화', count: 45, preview: '/api/placeholder/200/200' },
+                { type: 'tag', name: '#풍경화', count: 32, preview: '/api/placeholder/200/200' }
+            ];
+        }
+
+        // 작품 검색
+        async function searchPosts(query) {
+            const { data: posts, error } = await supabase
+                .from('posts')
+                .select(`
+                    *,
+                    users:user_id (id, username, profile_image_url)
+                `)
+                .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
+                .order('created_at', { ascending: false })
+                .limit(50);
+
+            if (error) throw error;
+
+            // 각 포스트에 좋아요 수 추가
+            for (let post of posts) {
+                const { count } = await supabase
+                    .from('post_likes')
+                    .select('*', { count: 'exact' })
+                    .eq('post_id', post.id);
+                post.likes_count = count || 0;
+            }
+
+            return posts.map(post => ({
+                type: 'artwork',
+                id: post.id,
+                image: post.image_url,
+                title: post.title,
+                likes: post.likes_count,
+                user: post.users
+            }));
+        }
+
+        // 계정 검색
+        async function searchAccounts(query) {
+            const { data: users, error } = await supabase
+                .from('users')
+                .select('*')
+                .or(`username.ilike.%${query}%,full_name.ilike.%${query}%`)
+                .limit(50);
+
+            if (error) throw error;
+
+            // 각 사용자의 팔로워 수 계산
+            for (let user of users) {
+                const { count } = await supabase
+                    .from('follows')
+                    .select('*', { count: 'exact' })
+                    .eq('following_id', user.id);
+                user.followers_count = count || 0;
+
+                // 현재 사용자가 이 사용자를 팔로우하는지 확인
+                if (currentUser) {
+                    const { data: followData } = await supabase
+                        .from('follows')
+                        .select('id')
+                        .eq('follower_id', currentUser.id)
+                        .eq('following_id', user.id)
+                        .single();
+                    user.is_following = !!followData;
+                }
+            }
+
+            return users.map(user => ({
+                type: 'account',
+                id: user.id,
+                username: user.username,
+                name: user.full_name || user.username,
+                avatar: user.profile_image_url || '/api/placeholder/64/64',
+                followers: user.followers_count,
+                is_following: user.is_following || false
+            }));
+        }
+
+        // 태그 검색 (임시로 더미 데이터)
+        async function searchTags(query) {
+            // TODO: 실제 태그 시스템 구현 시 교체
+            const allTags = [
+                { type: 'tag', name: '#디지털아트', count: 150, preview: '/api/placeholder/200/200' },
+                { type: 'tag', name: '#일러스트', count: 89, preview: '/api/placeholder/200/200' },
+                { type: 'tag', name: '#포토그래피', count: 67, preview: '/api/placeholder/200/200' },
+                { type: 'tag', name: '#추상화', count: 45, preview: '/api/placeholder/200/200' },
+                { type: 'tag', name: '#풍경화', count: 32, preview: '/api/placeholder/200/200' },
+                { type: 'tag', name: '#인물화', count: 28, preview: '/api/placeholder/200/200' },
+                { type: 'tag', name: '#수채화', count: 24, preview: '/api/placeholder/200/200' }
+            ];
+
+            return allTags.filter(tag => 
+                tag.name.toLowerCase().includes(query.toLowerCase())
+            );
+        }
+
+        // 검색 결과 표시
+        function displayResults(data) {
+            const resultsContainer = document.getElementById('search-results');
+            const noResults = document.getElementById('no-results');
+
+            if (data.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            resultsContainer.innerHTML = data.map(item => {
+                switch (item.type) {
+                    case 'artwork':
+                        return `
+                            <div class="flex flex-col gap-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="viewArtwork(${item.id})">
+                                <div class="w-full bg-center bg-no-repeat aspect-square bg-cover" style="background-image: url('${item.image}')"></div>
+                                <div class="flex items-center gap-2">
+                                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-6 w-6" style="background-image: url('${item.user?.profile_image_url || '/api/placeholder/24/24'}')"></div>
+                                    <p class="text-xs text-[#637488] truncate">${item.user?.username || '익명'}</p>
+                                    <div class="flex items-center gap-1 ml-auto">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10px" height="10px" fill="currentColor" viewBox="0 0 256 256">
+                                            <path d="M240,102c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,228.66,16,172,16,102A62.07,62.07,0,0,1,78,40c20.65,0,38.73,8.88,50,23.89C139.27,48.88,157.35,40,178,40A62.07,62.07,0,0,1,240,102Z"></path>
+                                        </svg>
+                                        <span class="text-xs text-[#637488]">${item.likes || 0}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    case 'account':
+                        const followButtonText = item.is_following ? '팔로잉' : '팔로우';
+                        const followButtonClass = item.is_following 
+                            ? 'px-4 py-1 text-xs font-medium rounded-lg bg-[#9bb5d9] text-[#121416] hover:bg-[#8aa8d0] transition-colors'
+                            : 'px-4 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors';
+                        
+                        return `
+                            <div class="flex flex-col items-center p-4 bg-[#f8f9fa] rounded-xl hover:bg-[#f0f2f4] transition-colors">
+                                <div class="w-16 h-16 bg-center bg-no-repeat bg-cover rounded-full mb-3 cursor-pointer" style="background-image: url('${item.avatar}')" onclick="viewProfile('${item.id}')"></div>
+                                <p class="text-sm font-bold text-[#111418] mb-1 cursor-pointer text-center" onclick="viewProfile('${item.id}')">${item.name}</p>
+                                <p class="text-xs text-[#637488] mb-2 cursor-pointer text-center" onclick="viewProfile('${item.id}')">@${item.username}</p>
+                                <p class="text-xs text-[#637488] mb-3">팔로워 ${item.followers}</p>
+                                ${currentUser && currentUser.id !== item.id ? `
+                                    <button class="${followButtonClass}" onclick="toggleFollowFromSearch('${item.id}', this)">
+                                        ${followButtonText}
+                                    </button>
+                                ` : ''}
+                            </div>
+                        `;
+                    case 'tag':
+                        return `
+                            <div class="flex flex-col cursor-pointer hover:opacity-80 transition-opacity" onclick="searchTag('${item.name}')">
+                                <div class="w-full bg-center bg-no-repeat aspect-square bg-cover mb-3 rounded-lg" style="background-image: url('${item.preview}')"></div>
+                                <p class="text-sm font-bold text-[#111418] mb-1">${item.name}</p>
+                                <p class="text-xs text-[#637488]">${item.count}개 게시물</p>
+                            </div>
+                        `;
+                    default:
+                        return '';
+                }
+            }).join('');
+        }
+
+        // 팔로우 토글
+        async function toggleFollowFromSearch(userId, buttonElement) {
+            if (!currentUser) {
+                alert('팔로우하려면 로그인이 필요합니다.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            if (currentUser.id === userId) {
+                alert('자기 자신을 팔로우할 수 없습니다.');
+                return;
+            }
+
+            const originalText = buttonElement.textContent;
+            buttonElement.disabled = true;
+            buttonElement.textContent = '처리 중...';
+
+            try {
+                const isCurrentlyFollowing = originalText === '팔로잉';
+                
+                if (isCurrentlyFollowing) {
+                    // 언팔로우
+                    const { error } = await supabase
+                        .from('follows')
+                        .delete()
+                        .eq('follower_id', currentUser.id)
+                        .eq('following_id', userId);
+                    
+                    if (error) throw error;
+                    
+                    buttonElement.textContent = '팔로우';
+                    buttonElement.className = 'px-4 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors';
+                } else {
+                    // 팔로우
+                    const { error } = await supabase
+                        .from('follows')
+                        .insert({
+                            follower_id: currentUser.id,
+                            following_id: userId
+                        });
+                    
+                    if (error) throw error;
+                    
+                    buttonElement.textContent = '팔로잉';
+                    buttonElement.className = 'px-4 py-1 text-xs font-medium rounded-lg bg-[#9bb5d9] text-[#121416] hover:bg-[#8aa8d0] transition-colors';
+                }
+                
+            } catch (error) {
+                console.error('팔로우 토글 오류:', error);
+                alert('팔로우 처리 중 오류가 발생했습니다.');
+                buttonElement.textContent = originalText;
+            } finally {
+                buttonElement.disabled = false;
+            }
+        }
+
+        // 네비게이션 함수들
         function viewArtwork(id) {
             window.location.href = `artwork.html?id=${id}`;
         }
 
-        function viewProfile(username) {
-            window.location.href = `profile.html?user=${username}`;
+        function viewProfile(userId) {
+            window.location.href = `profile.html?id=${userId}`;
         }
 
         function searchTag(tag) {
             document.getElementById('main-search').value = tag;
+            currentQuery = tag;
             switchTab('top');
         }
 
