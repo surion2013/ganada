@@ -96,10 +96,10 @@ function createNavigation(currentPage = '') {
                     </svg>
                 </div>
                 </button>
-                ${currentPage !== 'login' && currentPage !== 'signup' ? `
-                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 md:size-10 cursor-pointer" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face')" onclick="window.location.href='profile.html'"></div>
-                ` : ''}
             </div>
+            ${currentPage !== 'login' && currentPage !== 'signup' ? `
+            <div class="md:hidden bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer absolute right-2" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face')" onclick="window.location.href='profile.html'"></div>
+            ` : ''}
             
             <!-- PC에서 오른쪽 버튼들 (절대 위치) -->
             <div class="hidden md:flex items-center gap-4 absolute right-10">
@@ -125,10 +125,10 @@ function createNavigation(currentPage = '') {
                             </svg>
                         </div>
                     </button>
-                ${currentPage !== 'login' && currentPage !== 'signup' ? `
-                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 md:size-10 cursor-pointer" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face')" onclick="window.location.href='profile.html'"></div>
-                ` : ''}
             </div>
+            ${currentPage !== 'login' && currentPage !== 'signup' ? `
+            <div class="hidden md:block bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer absolute right-10" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face')" onclick="window.location.href='profile.html'"></div>
+            ` : ''}
         </header>
     `;
 }
