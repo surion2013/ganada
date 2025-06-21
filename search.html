@@ -259,7 +259,7 @@
                 .from('posts')
                 .select(`
                     *,
-                    users:user_id (id, username, profile_image_url)
+                    users:user_id (id, username, avatar_url)
                 `)
                 .order('created_at', { ascending: false })
                 .limit(20);
@@ -326,7 +326,7 @@
                 id: user.id,
                 username: user.username,
                 name: user.full_name || user.username,
-                avatar: user.profile_image_url || '/api/placeholder/64/64',
+                avatar: user.avatar_url || '/api/placeholder/64/64',
                 followers: user.followers_count,
                 is_following: user.is_following || false
             }));
@@ -350,7 +350,7 @@
                 .from('posts')
                 .select(`
                     *,
-                    users:user_id (id, username, profile_image_url)
+                    users:user_id (id, username, avatar_url)
                 `)
                 .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
                 .order('created_at', { ascending: false })
@@ -412,7 +412,7 @@
                 id: user.id,
                 username: user.username,
                 name: user.full_name || user.username,
-                avatar: user.profile_image_url || '/api/placeholder/64/64',
+                avatar: user.avatar_url || '/api/placeholder/64/64',
                 followers: user.followers_count,
                 is_following: user.is_following || false
             }));
@@ -453,7 +453,7 @@
                             <div class="flex flex-col gap-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="viewArtwork(${item.id})">
                                 <div class="w-full bg-center bg-no-repeat aspect-square bg-cover" style="background-image: url('${item.image}')"></div>
                                 <div class="flex items-center gap-2">
-                                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-6 w-6" style="background-image: url('${item.user?.profile_image_url || '/api/placeholder/24/24'}')"></div>
+                                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-6 w-6" style="background-image: url('${item.user?.avatar_url || '/api/placeholder/24/24'}')"></div>
                                     <p class="text-xs text-[#637488] truncate">${item.user?.username || '익명'}</p>
                                     <div class="flex items-center gap-1 ml-auto">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="10px" height="10px" fill="currentColor" viewBox="0 0 256 256">

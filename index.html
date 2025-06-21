@@ -178,7 +178,7 @@
                     .from('posts')
                     .select(`
                         *,
-                        users:user_id (id, username, profile_image_url)
+                        users:user_id (id, username, avatar_url)
                     `)
                     .in('user_id', followingIds)
                     .order('created_at', { ascending: false })
@@ -232,7 +232,7 @@
                     .from('posts')
                     .select(`
                         *,
-                        users:user_id (id, username, profile_image_url)
+                        users:user_id (id, username, avatar_url)
                     `)
                     .order('created_at', { ascending: false })
                     .limit(6);
@@ -272,7 +272,7 @@
                     .from('posts')
                     .select(`
                         *,
-                        users:user_id (id, username, profile_image_url)
+                        users:user_id (id, username, avatar_url)
                     `)
                     .order('created_at', { ascending: false })
                     .range(currentPage * postsPerPage, (currentPage + 1) * postsPerPage - 1);
@@ -336,7 +336,7 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-8 w-8 cursor-pointer" 
-                         style="background-image: url('${post.users?.profile_image_url || '/api/placeholder/32/32'}');"
+                         style="background-image: url('${post.users?.avatar_url || '/api/placeholder/32/32'}');"
                          onclick="window.location.href='profile.html?id=${post.user_id}'">
                     </div>
                     <div class="flex-1 min-w-0">
