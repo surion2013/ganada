@@ -2,14 +2,16 @@
 function createNavigation(currentPage = '') {
     return `
         <header class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f4] px-4 md:px-10 py-3 md:py-3">
-            <!-- 모바일에서는 로고 왼쪽 정렬 -->
-            <div class="flex md:hidden items-center gap-2 text-[#111418]">
-                <div class="size-4">
-                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
-                    </svg>
+            <!-- 모바일에서도 가운데 정렬 -->
+            <div class="flex md:hidden flex-1 items-center justify-center">
+                <div class="flex items-center gap-2 text-[#111418]">
+                    <div class="size-4">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
                 </div>
-                <h2 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
             </div>
             
             <!-- PC에서는 가운데 정렬된 컨테이너 -->
@@ -34,44 +36,9 @@ function createNavigation(currentPage = '') {
                     </div>
                 </div>
             </div>
-            <!-- 모바일에서는 모든 버튼을 하나의 그룹으로 표시 -->
-            <div class="flex md:hidden items-center gap-1">
-                <button
-                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'home' ? 'bg-[#ff8c00] text-white' : 'bg-[#f0f2f4] text-[#111418]'} text-sm font-bold leading-normal tracking-[0.015em]"
-                    onclick="window.location.href='index.html'"
-                    title="Home"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M224,115.55V208a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V168a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v40a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.11l80,75.48A16,16,0,0,1,224,115.55Z"></path>
-                    </svg>
-                </button>
-                <button
-                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'explore' ? 'bg-[#ff8c00] text-white' : 'bg-[#f0f2f4] text-[#111418]'} text-sm font-bold leading-normal tracking-[0.015em]"
-                    onclick="window.location.href='explore.html'"
-                    title="Explore"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M128,16A112,112,0,1,0,240,128,112.13,112.13,0,0,0,128,16Zm0,208a96,96,0,1,1,96-96A96.11,96.11,0,0,1,128,224ZM173.66,90.34a8,8,0,0,1,11.31,11.32l-12,12a8,8,0,0,1-11.31-11.32Zm-67.32,67.32a8,8,0,0,1-11.31,11.32l-12-12a8,8,0,0,1,11.31-11.32ZM184,128a8,8,0,0,1-8,8H152a8,8,0,0,1,0-16h24A8,8,0,0,1,184,128ZM128,72a8,8,0,0,1,8-8V40a8,8,0,0,1-16,0V64A8,8,0,0,1,128,72Z"></path>
-                    </svg>
-                </button>
-                <button
-                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'create' ? 'bg-[#ff8c00] text-white' : 'bg-[#f0f2f4] text-[#111418]'} text-sm font-bold leading-normal tracking-[0.015em]"
-                    onclick="window.location.href='create-post.html'"
-                    title="Create"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
-                    </svg>
-                </button>
-                <button
-                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'login' ? 'bg-[#ff8c00] text-white' : 'bg-[#f0f2f4] text-[#111418]'} text-sm font-bold leading-normal tracking-[0.015em]"
-                    onclick="window.location.href='login.html'"
-                    title="Login"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M141.66,133.66l-40,40a8,8,0,0,1-11.32-11.32L116.69,136H24a8,8,0,0,1,0-16h92.69L90.34,93.66a8,8,0,0,1,11.32-11.32l40,40A8,8,0,0,1,141.66,133.66ZM192,32H136a8,8,0,0,0,0,16h56V208H136a8,8,0,0,0,0,16h56a16,16,0,0,0,16-16V48A16,16,0,0,0,192,32Z"></path>
-                    </svg>
-                </button>
+            <!-- 모바일에서 오른쪽 버튼들 (절대 위치) -->
+            <div class="flex md:hidden items-center gap-1 absolute right-4">
+
                 <button
                     class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 md:h-10 bg-[#f0f2f4] text-[#111418] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
                     onclick="window.location.href='search.html'"
