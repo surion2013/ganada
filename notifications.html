@@ -7,37 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800">
-    <!-- Chrome 확장 프로그램 오류 방지 (최우선 실행) -->
-    <script>
-      (function() {
-        const originalConsoleError = console.error;
-        console.error = function(...args) {
-          const message = args.join(' ');
-          if (!message.includes('chrome-extension://') && 
-              !message.includes('Failed to fetch dynamically imported module')) {
-            originalConsoleError.apply(console, args);
-          }
-        };
-        
-        window.addEventListener('error', function(e) {
-          if (e.filename && e.filename.includes('chrome-extension://')) {
-            e.preventDefault();
-            return true;
-          }
-        }, true);
-        
-        window.addEventListener('unhandledrejection', function(e) {
-          if (e.reason && (e.reason.message || e.reason.toString()).includes('chrome-extension://')) {
-            e.preventDefault();
-            return true;
-          }
-        }, true);
-      })();
-    </script>
-    
-    <script>
-      window.tailwind = { config: { silent: true } };
-    </script>
+    <script src="error-handler.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>

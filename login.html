@@ -12,29 +12,9 @@
     />
             <title>GaNaDa - 로그인</title>
         <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+                <script src="error-handler.js"></script>
                 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
         <script src="navigation.js"></script>
-        
-        <!-- Chrome 확장 프로그램 오류 방지 -->
-        <script>
-          // 전역 오류 핸들러 추가
-          window.addEventListener('error', function(e) {
-            // Chrome 확장 프로그램 관련 오류 무시
-            if (e.filename && e.filename.includes('chrome-extension://')) {
-              e.preventDefault();
-              return false;
-            }
-          });
-          
-          // Promise rejection 오류 핸들러 추가
-          window.addEventListener('unhandledrejection', function(e) {
-            // Chrome 확장 프로그램 관련 오류 무시
-            if (e.reason && e.reason.message && e.reason.message.includes('chrome-extension://')) {
-              e.preventDefault();
-              return false;
-            }
-          });
-        </script>
   </head>
   <body>
     <div class="relative flex size-full min-h-screen flex-col bg-gray-50 group/design-root overflow-x-hidden" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
