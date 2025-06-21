@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
@@ -22,20 +23,29 @@
         <div id="navigation-container"></div>
         <div class="px-4 md:px-40 flex flex-1 justify-center py-5">
           <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div class="flex p-4 @container" id="profile-header">
-              <!-- Profile will be loaded from Supabase -->
+            
+            <!-- 로딩 상태 -->
+            <div class="flex items-center justify-center py-20" id="loading-state">
+              <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff8c00]"></div>
+              <span class="ml-3 text-[#6a7581]">프로필을 불러오는 중...</span>
+            </div>
+
+            <!-- 프로필 헤더 -->
+            <div class="flex p-4 @container hidden" id="profile-header">
               <div class="flex w-full flex-col gap-4 items-center">
                 <div class="flex gap-4 flex-col items-center">
-                  <div class="bg-gray-200 rounded-full min-h-32 w-32 flex items-center justify-center" id="profile-avatar">
+                  <div class="bg-gray-200 rounded-full min-h-32 w-32 flex items-center justify-center overflow-hidden" id="profile-avatar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48px" height="48px" fill="currentColor" viewBox="0 0 256 256" class="text-gray-400">
                       <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path>
                     </svg>
                   </div>
                   <div class="flex flex-col items-center justify-center">
                     <p class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] text-center" id="profile-username">사용자 프로필</p>
-                    <p class="text-[#6a7581] text-lg md:text-base font-normal leading-normal text-center" id="profile-bio">프로필을 불러오는 중...</p>
-                    <p class="text-[#6a7581] text-sm text-center mt-2" id="profile-stats">팔로워 0명 · 게시물 0개</p>
+                    <p class="text-[#6a7581] text-base font-normal leading-normal text-center mt-1" id="profile-full-name"></p>
+                    <p class="text-[#6a7581] text-sm leading-normal text-center mt-2" id="profile-bio"></p>
+                    <p class="text-[#6a7581] text-sm text-center mt-3" id="profile-stats">팔로워 0명 · 팔로잉 0명 · 게시물 0개</p>
                   </div>
+                  
                   <!-- 팔로우 버튼 (다른 사용자의 프로필일 때만 표시) -->
                   <div class="w-full max-w-xs" id="follow-button-container" style="display: none;">
                     <button
@@ -46,33 +56,40 @@
                       <span class="truncate" id="follow-text">팔로우</span>
                     </button>
                   </div>
+
+                  <!-- 프로필 편집 버튼 (자신의 프로필일 때만 표시) -->
+                  <div class="w-full max-w-xs" id="edit-profile-container" style="display: none;">
+                    <button
+                      class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 border border-[#dde0e3] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#f8f9fa] transition-colors"
+                      onclick="editProfile()"
+                      id="edit-profile-btn"
+                    >
+                      <span class="truncate">프로필 편집</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="pb-3">
+
+            <!-- 탭 메뉴 -->
+            <div class="pb-3 hidden" id="tabs-container">
               <div class="flex border-b border-[#dde0e3] px-4 justify-between">
                 <a class="flex flex-col items-center justify-center border-b-[3px] border-b-[#121416] text-[#121416] pb-[13px] pt-4 flex-1" href="#" id="posts-tab" onclick="switchTab('posts')">
-                  <p class="text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]">Posts</p>
+                  <p class="text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]">게시물</p>
                 </a>
                 <a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#6a7581] pb-[13px] pt-4 flex-1" href="#" id="tagged-tab" onclick="switchTab('tagged')">
-                  <p class="text-[#6a7581] text-sm font-bold leading-normal tracking-[0.015em]">Tagged</p>
+                  <p class="text-[#6a7581] text-sm font-bold leading-normal tracking-[0.015em]">태그됨</p>
                 </a>
               </div>
             </div>
-            <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-4 md:gap-3 p-4" id="posts-grid">
+
+            <!-- 게시물 그리드 -->
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-4 md:gap-3 p-4 hidden" id="posts-grid">
               <!-- Posts will be loaded from Supabase -->
-              <div class="flex flex-col items-center justify-center py-20 col-span-full">
-                <div class="text-[#6a7581] mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
-                    <path d="M216,42H40A14,14,0,0,0,26,56V200a14,14,0,0,0,14,14H216a14,14,0,0,0,14-14V56A14,14,0,0,0,216,42ZM40,54H216a2,2,0,0,1,2,2V158.2l-26.07-26.07a14,14,0,0,0-19.8,0L147.86,156.4,99.93,108.47a14,14,0,0,0-19.86,0L38,150.55V56A2,2,0,0,1,40,54ZM216,202H40a2,2,0,0,1-2-2V164.69l44.14-44.14a2,2,0,0,1,2.83,0L132.14,167.8a6,6,0,0,0,8.49,0l24.27-24.27a2,2,0,0,1,2.83,0L218,193.86V200A2,2,0,0,1,216,202ZM156,84a10,10,0,1,1,10,10A10,10,0,0,1,156,84Z"></path>
-                  </svg>
-                </div>
-                <p class="text-[#6a7581] text-xl md:text-lg font-medium mb-2">아직 게시된 작품이 없습니다</p>
-                <p class="text-[#6a7581] text-base md:text-sm">첫 번째 작품을 공유해보세요!</p>
-              </div>
             </div>
+
+            <!-- 태그된 게시물 그리드 -->
             <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-4 md:gap-3 p-4 hidden" id="tagged-grid">
-              <!-- Tagged posts will be loaded from Supabase -->
               <div class="flex flex-col items-center justify-center py-20 col-span-full">
                 <div class="text-[#6a7581] mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
@@ -83,37 +100,52 @@
                 <p class="text-[#6a7581] text-base md:text-sm">다른 사용자가 회원님을 태그하면 여기에 표시됩니다</p>
               </div>
             </div>
+
+            <!-- 에러 상태 -->
+            <div class="flex flex-col items-center justify-center py-20 hidden" id="error-state">
+              <div class="text-[#6a7581] mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z"></path>
+                </svg>
+              </div>
+              <p class="text-[#6a7581] text-xl md:text-lg font-medium mb-2">프로필을 찾을 수 없습니다</p>
+              <p class="text-[#6a7581] text-base md:text-sm">존재하지 않는 사용자이거나 오류가 발생했습니다</p>
+            </div>
+
           </div>
         </div>
-                 <footer class="border-t border-solid border-t-[#f0f2f4] px-4 md:px-10 py-2 md:py-3 mt-auto">
-             <div class="flex flex-col items-center justify-center gap-0.5 md:gap-1">
-                 <div class="flex items-center gap-1 md:gap-2 text-[#6a7581]">
-                     <div class="size-2.5 md:size-3">
-                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                             <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
-                         </svg>
-                     </div>
-                     <span class="text-xs md:text-sm font-medium">GaNaDa</span>
-                 </div>
-                 <p class="text-[#6a7581] text-xs text-center leading-none md:leading-tight">
-                     © 2025 UJUSOL. All rights reserved.
-                 </p>
-             </div>
-         </footer>
+        
+        <footer class="border-t border-solid border-t-[#f0f2f4] px-4 md:px-10 py-2 md:py-3 mt-auto">
+          <div class="flex flex-col items-center justify-center gap-0.5 md:gap-1">
+            <div class="flex items-center gap-1 md:gap-2 text-[#6a7581]">
+              <div class="size-2.5 md:size-3">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
+                </svg>
+              </div>
+              <span class="text-xs md:text-sm font-medium">GaNaDa</span>
+            </div>
+            <p class="text-[#6a7581] text-xs text-center leading-none md:leading-tight">
+              © 2025 UJUSOL. All rights reserved.
+            </p>
+          </div>
+        </footer>
       </div>
     </div>
 
     <script src="supabase-client.js"></script>
     <script>
       let isFollowing = false;
-      let followerCount = 0;
       let currentProfileUserId = null;
       let currentUser = null;
+      let profileData = null;
+      let userPosts = [];
+      let postsPage = 0;
+      const postsPerPage = 12;
 
       // 로그인 체크 함수
       function checkLoginForFollow() {
-        const user = JSON.parse(localStorage.getItem('ganada-user') || '{}');
-        if (!user.id) {
+        if (!currentUser || !currentUser.id) {
           alert('팔로우하려면 로그인이 필요합니다.');
           window.location.href = 'login.html';
           return false;
@@ -121,15 +153,12 @@
         return true;
       }
 
+      // 팔로우 토글 함수
       async function toggleFollow() {
-        // 로그인 체크
-        if (!checkLoginForFollow()) {
-          return;
-        }
+        if (!checkLoginForFollow()) return;
 
         const followBtn = document.getElementById('follow-btn');
         const followText = document.getElementById('follow-text');
-        const profileStats = document.getElementById('profile-stats');
         
         // 자기 자신을 팔로우할 수 없음
         if (currentUser.id === currentProfileUserId) {
@@ -142,27 +171,44 @@
         followText.textContent = '처리 중...';
 
         try {
-          // Supabase를 통해 팔로우 토글
-          const result = await SupabaseClient.Database.toggleFollow(currentUser.id, currentProfileUserId);
-          
-          if (result.success) {
-            isFollowing = result.following;
+          if (isFollowing) {
+            // 언팔로우
+            const { error } = await SupabaseClient.client
+              .from('follows')
+              .delete()
+              .eq('follower_id', currentUser.id)
+              .eq('following_id', currentProfileUserId);
+
+            if (error) throw error;
             
-            if (isFollowing) {
-              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#6b7280] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#4b5563] transition-colors';
-              followText.textContent = '팔로잉';
-              followerCount++;
-            } else {
-              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#ff8c00] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#e67e00] transition-colors';
-              followText.textContent = '팔로우';
-              followerCount--;
-            }
+            isFollowing = false;
+            followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#ff8c00] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#e67e00] transition-colors';
+            followText.textContent = '팔로우';
             
-            // 팔로워 수 업데이트
-            profileStats.textContent = `팔로워 ${followerCount.toLocaleString()}명 · 게시물 0개`;
+            // 팔로워 수 감소
+            profileData.followers_count = Math.max(0, profileData.followers_count - 1);
           } else {
-            alert('팔로우 처리 중 오류가 발생했습니다.');
+            // 팔로우
+            const { error } = await SupabaseClient.client
+              .from('follows')
+              .insert([{
+                follower_id: currentUser.id,
+                following_id: currentProfileUserId
+              }]);
+
+            if (error) throw error;
+            
+            isFollowing = true;
+            followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#6b7280] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#4b5563] transition-colors';
+            followText.textContent = '팔로잉';
+            
+            // 팔로워 수 증가
+            profileData.followers_count++;
           }
+          
+          // 통계 업데이트
+          updateProfileStats();
+          
         } catch (error) {
           console.error('Follow toggle error:', error);
           alert('팔로우 처리 중 오류가 발생했습니다.');
@@ -172,58 +218,135 @@
         }
       }
 
-      // 페이지 로드 시 프로필 데이터 로드
-      async function loadProfile() {
-        // URL에서 사용자 ID 가져오기 (예: profile.html?user=123)
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('user');
-        
-        // 현재 로그인한 사용자 정보
-        currentUser = JSON.parse(localStorage.getItem('ganada-user') || '{}');
-        
-        if (userId && userId !== currentUser.id) {
-          // 다른 사용자의 프로필
-          currentProfileUserId = userId;
+      // 프로필 통계 업데이트
+      function updateProfileStats() {
+        const profileStats = document.getElementById('profile-stats');
+        profileStats.textContent = `팔로워 ${profileData.followers_count.toLocaleString()}명 · 팔로잉 ${profileData.following_count.toLocaleString()}명 · 게시물 ${profileData.posts_count.toLocaleString()}개`;
+      }
+
+      // 사용자 프로필 데이터 로드
+      async function loadUserProfile(userId) {
+        try {
+          const { data, error } = await SupabaseClient.client
+            .from('users')
+            .select('*')
+            .eq('id', userId)
+            .single();
+
+          if (error) throw error;
           
-          // 팔로우 버튼 표시 (로그인한 경우에만, 자기 자신이 아닌 경우에만)
-          if (currentUser.id && userId !== currentUser.id) {
-            document.getElementById('follow-button-container').style.display = 'block';
-            
-            // 팔로우 상태 확인
-            try {
-              const followStatus = await SupabaseClient.Database.checkFollowStatus(currentUser.id, userId);
-              if (followStatus.success) {
-                isFollowing = followStatus.following;
-                const followBtn = document.getElementById('follow-btn');
-                const followText = document.getElementById('follow-text');
-                
-                if (isFollowing) {
-                  followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#6b7280] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#4b5563] transition-colors';
-                  followText.textContent = '팔로잉';
-                } else {
-                  followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#ff8c00] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#e67e00] transition-colors';
-                  followText.textContent = '팔로우';
-                }
-              }
-            } catch (error) {
-              console.error('Follow status check error:', error);
-            }
-          }
-          
-          // TODO: 해당 사용자의 프로필 정보 로드
-          document.getElementById('profile-username').textContent = `사용자 ${userId}`;
-          document.getElementById('profile-bio').textContent = '다른 사용자의 프로필입니다.';
-        } else {
-          // 자신의 프로필 또는 기본 프로필
-          currentProfileUserId = currentUser.id;
-          document.getElementById('profile-username').textContent = currentUser.username || '내 프로필';
-          document.getElementById('profile-bio').textContent = currentUser.bio || '나의 작품을 공유하는 공간입니다.';
+          return data;
+        } catch (error) {
+          console.error('Error loading user profile:', error);
+          return null;
         }
       }
 
-      // 페이지 로드 시 실행
-      document.addEventListener('DOMContentLoaded', loadProfile);
+      // 팔로우 상태 확인
+      async function checkFollowStatus(followerId, followingId) {
+        try {
+          const { data, error } = await SupabaseClient.client
+            .from('follows')
+            .select('id')
+            .eq('follower_id', followerId)
+            .eq('following_id', followingId)
+            .single();
 
+          return !error && data;
+        } catch (error) {
+          return false;
+        }
+      }
+
+      // 사용자 게시물 로드
+      async function loadUserPosts(userId, page = 0) {
+        try {
+          const { data, error } = await SupabaseClient.client
+            .from('posts')
+            .select(`
+              *,
+              users (
+                id,
+                username,
+                full_name,
+                avatar_url
+              )
+            `)
+            .eq('user_id', userId)
+            .eq('is_public', true)
+            .order('created_at', { ascending: false })
+            .range(page * postsPerPage, (page + 1) * postsPerPage - 1);
+
+          if (error) throw error;
+          
+          return data || [];
+        } catch (error) {
+          console.error('Error loading user posts:', error);
+          return [];
+        }
+      }
+
+      // 게시물 그리드 렌더링
+      function renderPosts(posts, append = false) {
+        const postsGrid = document.getElementById('posts-grid');
+        
+        if (!append) {
+          postsGrid.innerHTML = '';
+        }
+
+        if (posts.length === 0 && !append) {
+          postsGrid.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-20 col-span-full">
+              <div class="text-[#6a7581] mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M216,42H40A14,14,0,0,0,26,56V200a14,14,0,0,0,14,14H216a14,14,0,0,0,14-14V56A14,14,0,0,0,216,42ZM40,54H216a2,2,0,0,1,2,2V158.2l-26.07-26.07a14,14,0,0,0-19.8,0L147.86,156.4,99.93,108.47a14,14,0,0,0-19.86,0L38,150.55V56A2,2,0,0,1,40,54ZM216,202H40a2,2,0,0,1-2-2V164.69l44.14-44.14a2,2,0,0,1,2.83,0L132.14,167.8a6,6,0,0,0,8.49,0l24.27-24.27a2,2,0,0,1,2.83,0L218,193.86V200A2,2,0,0,1,216,202ZM156,84a10,10,0,1,1,10,10A10,10,0,0,1,156,84Z"></path>
+                </svg>
+              </div>
+              <p class="text-[#6a7581] text-xl md:text-lg font-medium mb-2">아직 게시된 작품이 없습니다</p>
+              <p class="text-[#6a7581] text-base md:text-sm">${currentProfileUserId === currentUser?.id ? '첫 번째 작품을 공유해보세요!' : '이 사용자는 아직 작품을 공유하지 않았습니다.'}</p>
+            </div>
+          `;
+          return;
+        }
+
+        posts.forEach(post => {
+          const postElement = document.createElement('div');
+          postElement.className = 'relative group cursor-pointer';
+          postElement.onclick = () => window.location.href = `artwork.html?id=${post.id}`;
+          
+          postElement.innerHTML = `
+            <div class="aspect-square bg-gray-100 overflow-hidden">
+              <img src="${post.image_url}" alt="${post.title || '작품'}" 
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            </div>
+            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-4 text-white">
+                <div class="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M178,32c-20.65,0-38.73,8.88-50,23.89C116.73,40.88,98.65,32,78,32A62.07,62.07,0,0,0,16,94c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,220.66,240,164,240,94A62.07,62.07,0,0,0,178,32ZM128,206.8C109.74,196.16,32,147.69,32,94A46.06,46.06,0,0,1,78,48c19.45,0,35.78,10.36,42.6,27a8,8,0,0,0,14.8,0c6.82-16.67,23.15-27,42.6-27a46.06,46.06,0,0,1,46,46C224,147.69,146.26,196.16,128,206.8Z"></path>
+                  </svg>
+                  <span class="text-sm font-medium">${post.likes_count || 0}</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M216,48H40a16,16,0,0,0-16,16V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,48ZM40,64H216V192H40ZM128,88a40,40,0,1,0,40,40A40,40,0,0,0,128,88Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,152Z"></path>
+                  </svg>
+                  <span class="text-sm font-medium">${post.comments_count || 0}</span>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          postsGrid.appendChild(postElement);
+        });
+      }
+
+      // 프로필 편집 (임시)
+      function editProfile() {
+        alert('프로필 편집 기능은 준비 중입니다.');
+      }
+
+      // 탭 전환
       function switchTab(tab) {
         const postsTab = document.getElementById('posts-tab');
         const taggedTab = document.getElementById('tagged-tab');
@@ -256,9 +379,105 @@
           postsGrid.classList.add('hidden');
         }
       }
-      
-      // 네비게이션 초기화
-      initNavigation('profile');
+
+      // 메인 프로필 로드 함수
+      async function loadProfile() {
+        const loadingState = document.getElementById('loading-state');
+        const profileHeader = document.getElementById('profile-header');
+        const tabsContainer = document.getElementById('tabs-container');
+        const postsGrid = document.getElementById('posts-grid');
+        const errorState = document.getElementById('error-state');
+
+        try {
+          // 현재 로그인한 사용자 정보
+          currentUser = JSON.parse(localStorage.getItem('ganada-user') || '{}');
+          
+          // URL에서 사용자 ID 가져오기
+          const urlParams = new URLSearchParams(window.location.search);
+          const userId = urlParams.get('user');
+          
+          // 프로필 대상 사용자 결정
+          currentProfileUserId = userId || currentUser.id;
+          
+          if (!currentProfileUserId) {
+            // 로그인하지 않았고 URL에 사용자 ID도 없는 경우
+            window.location.href = 'login.html';
+            return;
+          }
+
+          // 사용자 프로필 데이터 로드
+          profileData = await loadUserProfile(currentProfileUserId);
+          
+          if (!profileData) {
+            // 사용자를 찾을 수 없음
+            loadingState.classList.add('hidden');
+            errorState.classList.remove('hidden');
+            return;
+          }
+
+          // 프로필 정보 표시
+          document.getElementById('profile-username').textContent = profileData.username || '사용자';
+          document.getElementById('profile-full-name').textContent = profileData.full_name || '';
+          document.getElementById('profile-bio').textContent = profileData.bio || '';
+          
+          // 프로필 사진 설정
+          const profileAvatar = document.getElementById('profile-avatar');
+          if (profileData.avatar_url) {
+            profileAvatar.innerHTML = `<img src="${profileData.avatar_url}" alt="프로필 사진" class="w-full h-full object-cover rounded-full">`;
+          }
+
+          // 통계 업데이트
+          updateProfileStats();
+
+          // 자신의 프로필인지 다른 사용자의 프로필인지 확인
+          const isOwnProfile = currentUser.id === currentProfileUserId;
+          
+          if (isOwnProfile) {
+            // 자신의 프로필 - 편집 버튼 표시
+            document.getElementById('edit-profile-container').style.display = 'block';
+          } else if (currentUser.id) {
+            // 다른 사용자의 프로필 - 팔로우 버튼 표시
+            document.getElementById('follow-button-container').style.display = 'block';
+            
+            // 팔로우 상태 확인
+            isFollowing = await checkFollowStatus(currentUser.id, currentProfileUserId);
+            const followBtn = document.getElementById('follow-btn');
+            const followText = document.getElementById('follow-text');
+            
+            if (isFollowing) {
+              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#6b7280] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#4b5563] transition-colors';
+              followText.textContent = '팔로잉';
+            } else {
+              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#ff8c00] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#e67e00] transition-colors';
+              followText.textContent = '팔로우';
+            }
+          }
+
+          // 사용자 게시물 로드
+          userPosts = await loadUserPosts(currentProfileUserId, 0);
+          renderPosts(userPosts);
+
+          // UI 표시
+          loadingState.classList.add('hidden');
+          profileHeader.classList.remove('hidden');
+          tabsContainer.classList.remove('hidden');
+          postsGrid.classList.remove('hidden');
+
+        } catch (error) {
+          console.error('Error loading profile:', error);
+          loadingState.classList.add('hidden');
+          errorState.classList.remove('hidden');
+        }
+      }
+
+      // 페이지 로드 시 실행
+      document.addEventListener('DOMContentLoaded', () => {
+        // 네비게이션 초기화
+        initNavigation('profile');
+        
+        // 프로필 로드
+        loadProfile();
+      });
     </script>
   </body>
 </html> 
