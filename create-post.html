@@ -39,7 +39,7 @@
                       <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <p class="text-[#6a7581] text-lg font-medium">이미지를 클릭해서 업로드</p>
-                    <p class="text-[#6a7581] text-sm">PNG, JPG, GIF 최대 10MB</p>
+                    <p class="text-[#6a7581] text-sm">PNG, JPG, GIF 최대 50MB</p>
                   </div>
                 </div>
               </div>
@@ -48,52 +48,12 @@
             <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
               <label class="flex flex-col min-w-40 flex-1">
                 <textarea
-                  placeholder="캡션을 작성하세요"
+                  placeholder="작품 설명"
                   class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white focus:border-[#dde0e3] min-h-36 placeholder:text-[#6a7581] p-[15px] text-base font-normal leading-normal"
                   id="caption-input"
                   maxlength="2200"
                 ></textarea>
               </label>
-            </div>
-            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label class="flex flex-col min-w-40 flex-1">
-                <input
-                  placeholder="위치 추가"
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white focus:border-[#dde0e3] h-14 placeholder:text-[#6a7581] p-[15px] text-base font-normal leading-normal"
-                  value=""
-                  id="location-input"
-                />
-              </label>
-            </div>
-            <h2 class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">접근성</h2>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 justify-between">
-                              <div class="flex flex-col justify-center">
-                  <p class="text-[#121416] text-lg md:text-base font-medium leading-normal line-clamp-1">대체 텍스트 작성</p>
-                  <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal line-clamp-2">대체 텍스트는 시각 장애인을 위해 사진을 설명합니다.</p>
-                </div>
-              <div class="shrink-0">
-                <button
-                  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-8 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-medium leading-normal w-fit"
-                  onclick="openAltTextModal()"
-                >
-                  <span class="truncate" id="alt-text-button">대체 텍스트 추가</span>
-                </button>
-              </div>
-            </div>
-            <h2 class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">고급 설정</h2>
-            <div class="flex items-center gap-4 bg-white px-4 min-h-[72px] py-2 justify-between">
-                              <div class="flex flex-col justify-center">
-                  <p class="text-[#121416] text-lg md:text-base font-medium leading-normal line-clamp-1">댓글 기능 끄기</p>
-                  <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal line-clamp-2">허용한 사람만 이 게시물에 댓글을 달 수 있습니다.</p>
-                </div>
-              <div class="shrink-0">
-                <label
-                  class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-[#f1f2f4] p-0.5 has-[:checked]:justify-end has-[:checked]:bg-[#b2cae5]"
-                >
-                  <div class="h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
-                  <input type="checkbox" class="invisible absolute" id="commenting-toggle" />
-                </label>
-              </div>
             </div>
             <div class="flex px-4 py-3 justify-end">
               <button
@@ -109,32 +69,7 @@
         <div id="footer-container"></div>
       </div>
 
-      <!-- Alt Text Modal -->
-      <div id="alt-text-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-          <h3 class="text-[#121416] text-lg font-bold mb-4">대체 텍스트 작성</h3>
-          <textarea
-            placeholder="시각 장애인을 위해 이미지를 설명해주세요..."
-            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border border-[#dde0e3] bg-white focus:border-[#dde0e3] min-h-24 placeholder:text-[#6a7581] p-[15px] text-base font-normal leading-normal mb-4"
-            id="alt-text-input"
-            maxlength="125"
-          ></textarea>
-          <div class="flex justify-end gap-3">
-            <button
-              class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-medium leading-normal"
-              onclick="closeAltTextModal()"
-            >
-              취소
-            </button>
-            <button
-              class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#b2cae5] text-[#121416] text-sm font-bold leading-normal"
-              onclick="saveAltText()"
-            >
-              저장
-            </button>
-          </div>
-        </div>
-      </div>
+
 
       <!-- Success Modal -->
       <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
@@ -158,7 +93,6 @@
 
     <script>
       let selectedImage = null;
-      let altText = '';
 
       function handleFileSelect(event) {
         const file = event.target.files[0];
@@ -178,35 +112,8 @@
         }
       }
 
-      function openAltTextModal() {
-        document.getElementById('alt-text-modal').classList.remove('hidden');
-        document.getElementById('alt-text-input').value = altText;
-        document.getElementById('alt-text-input').focus();
-      }
-
-      function closeAltTextModal() {
-        document.getElementById('alt-text-modal').classList.add('hidden');
-      }
-
-      function saveAltText() {
-        altText = document.getElementById('alt-text-input').value;
-        const button = document.getElementById('alt-text-button');
-        if (altText.trim()) {
-          button.textContent = '대체 텍스트 수정';
-          button.parentElement.classList.remove('bg-[#f1f2f4]');
-          button.parentElement.classList.add('bg-[#b2cae5]');
-        } else {
-          button.textContent = '대체 텍스트 추가';
-          button.parentElement.classList.add('bg-[#f1f2f4]');
-          button.parentElement.classList.remove('bg-[#b2cae5]');
-        }
-        closeAltTextModal();
-      }
-
       async function sharePost() {
         const caption = document.getElementById('caption-input').value;
-        const location = document.getElementById('location-input').value;
-        const commentsDisabled = document.getElementById('commenting-toggle').checked;
 
         if (!selectedImage) {
           alert('먼저 이미지를 선택해주세요!');
@@ -245,9 +152,6 @@
             image_url: uploadResult.url,
             image_path: uploadResult.path,
             caption: caption,
-            location: location,
-            alt_text: altText,
-            comments_disabled: commentsDisabled,
             likes_count: 0,
             comments_count: 0
           };
@@ -323,9 +227,6 @@
 
       // Close modals when clicking outside
       document.addEventListener('click', function(e) {
-        if (e.target.id === 'alt-text-modal') {
-          closeAltTextModal();
-        }
         if (e.target.id === 'success-modal') {
           goToHome();
         }
