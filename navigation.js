@@ -24,7 +24,7 @@ function createNavigation(currentPage = '', isLoggedIn = false) {
                         <a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'explore' ? 'font-bold' : ''}" href="explore.html">Explore</a>
                         <a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'create' ? 'font-bold' : ''}" href="create-post.html">Create</a>
 
-                        <a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'notifications' ? 'font-bold' : ''}" href="notifications.html">Notifications</a>
+                        <button class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'notifications' ? 'font-bold' : ''} cursor-pointer" onclick="handleNotificationsClick()">Notifications</button>
                         ${isLoggedIn ? 
                             `<button class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 cursor-pointer" onclick="handleLogout()">Logout</button>` :
                             `<a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'login' ? 'font-bold' : ''}" href="login.html">Login</a>`
@@ -84,7 +84,7 @@ function createNavigation(currentPage = '', isLoggedIn = false) {
 
                 <button
                     class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 md:h-10 bg-[#f0f2f4] text-[#111418] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 ${currentPage === 'notifications' ? 'border-b-2 border-[#ff8c00]' : ''}"
-                    onclick="window.location.href='notifications.html'"
+                    onclick="handleNotificationsClick()"
                     title="Notifications"
                 >
                     <div class="text-[#111418]" data-icon="Bell" data-size="20px" data-weight="regular">
@@ -131,6 +131,30 @@ function createFooter() {
             </div>
         </footer>
     `;
+}
+
+// 알림 페이지 접근 시 로그인 체크
+async function handleNotificationsClick() {
+    try {
+        let isLoggedIn = false;
+        
+        // Supabase 인증 상태 확인
+        if (typeof supabase !== 'undefined') {
+            const { data: { user } } = await supabase.auth.getUser();
+            isLoggedIn = !!user;
+        }
+        
+        if (!isLoggedIn) {
+            alert('알림을 확인하려면 로그인이 필요합니다.');
+            return;
+        }
+        
+        // 로그인된 사용자는 알림 페이지로 이동
+        window.location.href = 'notifications.html';
+    } catch (error) {
+        console.error('알림 페이지 접근 중 오류:', error);
+        alert('알림을 확인하려면 로그인이 필요합니다.');
+    }
 }
 
 // 로그아웃 처리 함수
