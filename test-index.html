@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaNaDa - 테스트</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="min-h-screen bg-white p-8">
+        <h1 class="text-2xl font-bold mb-4">GaNaDa 테스트 페이지</h1>
+        
+        <div id="status" class="mb-4 p-4 border rounded">
+            <p>테스트 중...</p>
+        </div>
+        
+        <div id="results" class="space-y-2">
+            <!-- 테스트 결과가 여기에 표시됩니다 -->
+        </div>
+        
+        <div class="mt-8">
+            <button onclick="window.location.href='index.html'" class="px-4 py-2 bg-blue-500 text-white rounded">
+                홈페이지로 돌아가기
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function addResult(message, isError = false) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `p-2 rounded ${isError ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+
+        async function runTests() {
+            const status = document.getElementById('status');
+            status.innerHTML = '<p>테스트 실행 중...</p>';
+
+            try {
+                // 1. Supabase 라이브러리 확인
+                if (typeof window.supabase !== 'undefined') {
+                    addResult('✅ Supabase 라이브러리 로드됨');
+                } else {
+                    addResult('❌ Supabase 라이브러리 로드 실패', true);
+                    return;
+                }
+
+                // 2. Supabase 클라이언트 초기화
+                const SUPABASE_URL = 'https://vkruehwtypnlbhdurrcy.supabase.co';
+                const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrcnVlaHd0eXBubGJoZHVycmN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0MzE3OTUsImV4cCI6MjA2NjAwNzc5NX0.0xtYEKfKkT0bRVflSCc2WjNOMHCh7lAyHLCxLPtCfgY';
+                
+                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                addResult('✅ Supabase 클라이언트 초기화됨');
+
+                // 3. 사용자 인증 상태 확인
+                const { data: { user }, error: authError } = await supabase.auth.getUser();
+                if (authError) {
+                    addResult(`❌ 인증 확인 오류: ${authError.message}`, true);
+                } else {
+                    addResult(`✅ 인증 상태 확인 완료 (로그인: ${user ? '예' : '아니오'})`);
+                }
+
+                // 4. 데이터베이스 연결 테스트
+                const { data: posts, error: dbError } = await supabase
+                    .from('posts')
+                    .select('id, title, created_at')
+                    .limit(1);
+
+                if (dbError) {
+                    addResult(`❌ 데이터베이스 연결 오류: ${dbError.message}`, true);
+                } else {
+                    addResult(`✅ 데이터베이스 연결 성공 (포스트 수: ${posts.length})`);
+                }
+
+                status.innerHTML = '<p class="text-green-600 font-bold">✅ 모든 테스트 완료</p>';
+
+            } catch (error) {
+                addResult(`❌ 예상치 못한 오류: ${error.message}`, true);
+                status.innerHTML = '<p class="text-red-600 font-bold">❌ 테스트 실패</p>';
+            }
+        }
+
+        // 페이지 로드 후 테스트 실행
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(runTests, 1000); // 1초 후 실행
+        });
+    </script>
+</body>
+</html> 

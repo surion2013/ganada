@@ -2,8 +2,19 @@
 const SUPABASE_URL = 'https://vkruehwtypnlbhdurrcy.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrcnVlaHd0eXBubGJoZHVycmN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0MzE3OTUsImV4cCI6MjA2NjAwNzc5NX0.0xtYEKfKkT0bRVflSCc2WjNOMHCh7lAyHLCxLPtCfgY';
 
-// Supabase 클라이언트 초기화
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Supabase 클라이언트 초기화 (안전한 방식)
+let supabase;
+
+try {
+  if (typeof window !== 'undefined' && window.supabase) {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Supabase 클라이언트 초기화 완료');
+  } else {
+    console.error('Supabase 라이브러리가 로드되지 않았습니다.');
+  }
+} catch (error) {
+  console.error('Supabase 클라이언트 초기화 오류:', error);
+}
 
 // 인증 관련 함수들
 const Auth = {

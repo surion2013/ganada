@@ -90,9 +90,32 @@
         let hasMorePosts = true;
         let currentUser = null;
 
+        // Supabase 클라이언트 확인 및 초기화 대기
+        async function waitForSupabase() {
+            let attempts = 0;
+            const maxAttempts = 50; // 5초 대기
+            
+            while (attempts < maxAttempts) {
+                if (window.supabase && typeof supabase !== 'undefined') {
+                    return true;
+                }
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+            }
+            return false;
+        }
+
         // 페이지 로드 시 실행
         document.addEventListener('DOMContentLoaded', async function() {
             try {
+                // Supabase 클라이언트가 로드될 때까지 대기
+                const supabaseReady = await waitForSupabase();
+                if (!supabaseReady) {
+                    console.error('Supabase 클라이언트를 로드할 수 없습니다.');
+                    showEmptyState();
+                    return;
+                }
+
                 // 로그인 상태 확인
                 const { data: { user } } = await supabase.auth.getUser();
                 currentUser = user;
@@ -112,9 +135,14 @@
                 
             } catch (error) {
                 console.error('페이지 로드 중 오류:', error);
+                // 오류 발생 시 기본 상태로 설정
+                document.getElementById('main-title').textContent = '최신 작품';
                 showEmptyState();
             } finally {
-                document.getElementById('loading-posts').classList.add('hidden');
+                const loadingElement = document.getElementById('loading-posts');
+                if (loadingElement) {
+                    loadingElement.classList.add('hidden');
+                }
             }
         });
 
