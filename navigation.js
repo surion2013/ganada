@@ -1,14 +1,38 @@
 // 공통 네비게이션 바 컴포넌트
 function createNavigation(currentPage = '') {
     return `
-        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f4] px-4 md:px-10 py-3 md:py-3">
-            <div class="flex items-center gap-2 text-[#111418]">
-                <div class="size-4 md:size-4">
+        <header class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f4] px-4 md:px-10 py-3 md:py-3">
+            <!-- 모바일에서는 로고 왼쪽 정렬 -->
+            <div class="flex md:hidden items-center gap-2 text-[#111418]">
+                <div class="size-4">
                     <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
                     </svg>
                 </div>
-                <h2 class="text-[#111418] text-lg md:text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
+                <h2 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
+            </div>
+            
+            <!-- PC에서는 가운데 정렬된 컨테이너 -->
+            <div class="hidden md:flex flex-1 items-center justify-center">
+                <div class="flex items-center gap-24">
+                    <!-- 로고 -->
+                    <div class="flex items-center gap-2 text-[#111418]">
+                        <div class="size-4">
+                            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
+                    </div>
+                    
+                    <!-- 메뉴 -->
+                    <div class="flex items-center gap-9">
+                        <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'home' ? 'font-bold' : ''}" href="index.html">Home</a>
+                        <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'explore' ? 'font-bold' : ''}" href="explore.html">Explore</a>
+                        <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'create' ? 'font-bold' : ''}" href="create-post.html">Create</a>
+                        <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'login' ? 'font-bold' : ''}" href="login.html">Login</a>
+                    </div>
+                </div>
             </div>
             <!-- 모바일에서는 모든 버튼을 하나의 그룹으로 표시 -->
             <div class="flex md:hidden items-center gap-1">
@@ -75,17 +99,8 @@ function createNavigation(currentPage = '') {
                 ` : ''}
             </div>
             
-            <!-- 데스크톱 메뉴 - 로고 바로 옆에 위치 -->
-            <div class="hidden md:flex items-center gap-9 ml-8">
-                <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'home' ? 'font-bold' : ''}" href="index.html">Home</a>
-                <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'explore' ? 'font-bold' : ''}" href="explore.html">Explore</a>
-                <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'create' ? 'font-bold' : ''}" href="create-post.html">Create</a>
-                <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'login' ? 'font-bold' : ''}" href="login.html">Login</a>
-            </div>
-            
-            <!-- 데스크톱에서 오른쪽 버튼들 -->
-            <div class="hidden md:flex flex-1 justify-end items-center gap-4">
-                <div class="flex items-center gap-4">
+            <!-- PC에서 오른쪽 버튼들 (절대 위치) -->
+            <div class="hidden md:flex items-center gap-4 absolute right-10">
                     <button
                         class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 md:h-10 bg-[#f0f2f4] text-[#111418] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
                         onclick="window.location.href='search.html'"
@@ -108,7 +123,6 @@ function createNavigation(currentPage = '') {
                             </svg>
                         </div>
                     </button>
-                </div>
                 ${currentPage !== 'login' && currentPage !== 'signup' ? `
                 <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 md:size-10 cursor-pointer" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face')" onclick="window.location.href='profile.html'"></div>
                 ` : ''}
