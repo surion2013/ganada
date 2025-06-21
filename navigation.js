@@ -3,14 +3,14 @@ function createNavigation(currentPage = '') {
     return `
         <header class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f4] px-4 md:px-10 py-3 md:py-3">
             <!-- 모바일에서도 가운데 정렬 -->
-            <div class="flex md:hidden flex-1 items-center justify-center">
+            <div class="flex md:hidden flex-1 items-center justify-center relative z-10">
                 <div class="flex items-center gap-2 text-[#111418]">
-                    <div class="size-4">
+                    <div class="size-4 flex items-center justify-center">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
                         </svg>
                     </div>
-                    <h2 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
+                    <h2 class="text-[#111418] text-lg font-bold leading-none tracking-[-0.015em] cursor-pointer flex items-center" onclick="window.location.href='index.html'">GaNaDa</h2>
                 </div>
             </div>
             
@@ -19,27 +19,27 @@ function createNavigation(currentPage = '') {
                 <div class="flex items-center gap-24">
                     <!-- 로고 -->
                     <div class="flex items-center gap-2 text-[#111418]">
-                        <div class="size-4">
+                        <div class="size-4 flex items-center justify-center">
                             <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
                             </svg>
                         </div>
-                        <h2 class="text-[#111418] text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
+                        <h2 class="text-[#111418] text-lg font-bold leading-none tracking-[-0.015em] cursor-pointer flex items-center" onclick="window.location.href='index.html'">GaNaDa</h2>
                     </div>
                     
                     <!-- 메뉴 -->
                     <div class="flex items-center gap-9">
-                        <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'home' ? 'font-bold' : ''}" href="index.html">Home</a>
-                        <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'explore' ? 'font-bold' : ''}" href="explore.html">Explore</a>
-                        <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'create' ? 'font-bold' : ''}" href="create-post.html">Create</a>
-                        <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'login' ? 'font-bold' : ''}" href="login.html">Login</a>
+                        <a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'home' ? 'font-bold' : ''}" href="index.html">Home</a>
+                        <a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'explore' ? 'font-bold' : ''}" href="explore.html">Explore</a>
+                        <a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'create' ? 'font-bold' : ''}" href="create-post.html">Create</a>
+                        <a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'login' ? 'font-bold' : ''}" href="login.html">Login</a>
                     </div>
                 </div>
             </div>
             <!-- 모바일에서 오른쪽 버튼들 (절대 위치) -->
             <div class="flex md:hidden items-center gap-1 absolute right-4">
                 <button
-                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'home' ? 'bg-[#ff8c00] text-white' : 'bg-[#f0f2f4] text-[#111418]'} text-sm font-bold leading-normal tracking-[0.015em]"
+                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 bg-[#f0f2f4] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em] ${currentPage === 'home' ? 'border-b-2 border-[#ff8c00]' : ''}"
                     onclick="window.location.href='index.html'"
                     title="Home"
                 >
@@ -48,7 +48,7 @@ function createNavigation(currentPage = '') {
                     </svg>
                 </button>
                 <button
-                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'explore' ? 'bg-[#ff8c00] text-white' : 'bg-[#f0f2f4] text-[#111418]'} text-sm font-bold leading-normal tracking-[0.015em]"
+                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 bg-[#f0f2f4] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em] ${currentPage === 'explore' ? 'border-b-2 border-[#ff8c00]' : ''}"
                     onclick="window.location.href='explore.html'"
                     title="Explore"
                 >
@@ -57,7 +57,7 @@ function createNavigation(currentPage = '') {
                     </svg>
                 </button>
                 <button
-                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'create' ? 'bg-[#ff8c00] text-white' : 'bg-[#f0f2f4] text-[#111418]'} text-sm font-bold leading-normal tracking-[0.015em]"
+                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 bg-[#f0f2f4] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em] ${currentPage === 'create' ? 'border-b-2 border-[#ff8c00]' : ''}"
                     onclick="window.location.href='create-post.html'"
                     title="Create"
                 >
@@ -66,7 +66,7 @@ function createNavigation(currentPage = '') {
                     </svg>
                 </button>
                 <button
-                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 ${currentPage === 'login' ? 'bg-[#ff8c00] text-white' : 'bg-[#f0f2f4] text-[#111418]'} text-sm font-bold leading-normal tracking-[0.015em]"
+                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 bg-[#f0f2f4] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em] ${currentPage === 'login' ? 'border-b-2 border-[#ff8c00]' : ''}"
                     onclick="window.location.href='login.html'"
                     title="Login"
                 >
@@ -75,7 +75,7 @@ function createNavigation(currentPage = '') {
                     </svg>
                 </button>
                 <button
-                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 md:h-10 bg-[#f0f2f4] text-[#111418] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
+                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 md:h-10 bg-[#f0f2f4] text-[#111418] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 ${currentPage === 'search' ? 'border-b-2 border-[#ff8c00]' : ''}"
                     onclick="window.location.href='search.html'"
                     title="Search"
                 >
@@ -86,7 +86,7 @@ function createNavigation(currentPage = '') {
                     </div>
                 </button>
                 <button
-                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 md:h-10 bg-[#f0f2f4] text-[#111418] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
+                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 md:h-10 bg-[#f0f2f4] text-[#111418] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 ${currentPage === 'notifications' ? 'border-b-2 border-[#ff8c00]' : ''}"
                     onclick="window.location.href='notifications.html'"
                     title="Notifications"
                 >
