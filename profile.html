@@ -26,14 +26,25 @@
               <!-- Profile will be loaded from Supabase -->
               <div class="flex w-full flex-col gap-4 items-center">
                 <div class="flex gap-4 flex-col items-center">
-                  <div class="bg-gray-200 rounded-full min-h-32 w-32 flex items-center justify-center">
+                  <div class="bg-gray-200 rounded-full min-h-32 w-32 flex items-center justify-center" id="profile-avatar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48px" height="48px" fill="currentColor" viewBox="0 0 256 256" class="text-gray-400">
                       <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path>
                     </svg>
                   </div>
-                  <div class="flex flex-col items-center justify-center justify-center">
-                    <p class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] text-center">사용자 프로필</p>
-                    <p class="text-[#6a7581] text-lg md:text-base font-normal leading-normal text-center">프로필을 불러오는 중...</p>
+                  <div class="flex flex-col items-center justify-center">
+                    <p class="text-[#121416] text-2xl md:text-[22px] font-bold leading-tight tracking-[-0.015em] text-center" id="profile-username">사용자 프로필</p>
+                    <p class="text-[#6a7581] text-lg md:text-base font-normal leading-normal text-center" id="profile-bio">프로필을 불러오는 중...</p>
+                    <p class="text-[#6a7581] text-sm text-center mt-2" id="profile-stats">팔로워 0명 · 게시물 0개</p>
+                  </div>
+                  <!-- 팔로우 버튼 (다른 사용자의 프로필일 때만 표시) -->
+                  <div class="w-full max-w-xs" id="follow-button-container" style="display: none;">
+                    <button
+                      class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full"
+                      onclick="toggleFollow()"
+                      id="follow-btn"
+                    >
+                      <span class="truncate" id="follow-text">팔로우</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -92,29 +103,126 @@
       </div>
     </div>
 
+    <script src="supabase-client.js"></script>
     <script>
       let isFollowing = false;
-      let followerCount = 1234;
+      let followerCount = 0;
+      let currentProfileUserId = null;
+      let currentUser = null;
 
-      function toggleFollow() {
+      // 로그인 체크 함수
+      function checkLoginForFollow() {
+        const user = JSON.parse(localStorage.getItem('ganada-user') || '{}');
+        if (!user.id) {
+          alert('팔로우하려면 로그인이 필요합니다.');
+          window.location.href = 'login.html';
+          return false;
+        }
+        return true;
+      }
+
+      async function toggleFollow() {
+        // 로그인 체크
+        if (!checkLoginForFollow()) {
+          return;
+        }
+
         const followBtn = document.getElementById('follow-btn');
         const followText = document.getElementById('follow-text');
-        const followerDisplay = document.querySelector('.text-center:nth-child(3)');
+        const profileStats = document.getElementById('profile-stats');
         
-        if (isFollowing) {
-          followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] @[480px]:w-auto';
-          followText.textContent = 'Follow';
-          followerCount--;
-          isFollowing = false;
-        } else {
-          followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#b2cae5] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] @[480px]:w-auto';
-          followText.textContent = 'Following';
-          followerCount++;
-          isFollowing = true;
+        // 자기 자신을 팔로우할 수 없음
+        if (currentUser.id === currentProfileUserId) {
+          alert('자기 자신을 팔로우할 수 없습니다.');
+          return;
         }
-        
-        followerDisplay.textContent = `${followerCount.toLocaleString()} followers · 567 posts`;
+
+        // 버튼 비활성화 (중복 클릭 방지)
+        followBtn.disabled = true;
+        followText.textContent = '처리 중...';
+
+        try {
+          // Supabase를 통해 팔로우 토글
+          const result = await SupabaseClient.Database.toggleFollow(currentUser.id, currentProfileUserId);
+          
+          if (result.success) {
+            isFollowing = result.following;
+            
+            if (isFollowing) {
+              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#b2cae5] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full';
+              followText.textContent = '팔로잉';
+              followerCount++;
+            } else {
+              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full';
+              followText.textContent = '팔로우';
+              followerCount--;
+            }
+            
+            // 팔로워 수 업데이트
+            profileStats.textContent = `팔로워 ${followerCount.toLocaleString()}명 · 게시물 0개`;
+          } else {
+            alert('팔로우 처리 중 오류가 발생했습니다.');
+          }
+        } catch (error) {
+          console.error('Follow toggle error:', error);
+          alert('팔로우 처리 중 오류가 발생했습니다.');
+        } finally {
+          // 버튼 재활성화
+          followBtn.disabled = false;
+        }
       }
+
+      // 페이지 로드 시 프로필 데이터 로드
+      async function loadProfile() {
+        // URL에서 사용자 ID 가져오기 (예: profile.html?user=123)
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user');
+        
+        // 현재 로그인한 사용자 정보
+        currentUser = JSON.parse(localStorage.getItem('ganada-user') || '{}');
+        
+        if (userId && userId !== currentUser.id) {
+          // 다른 사용자의 프로필
+          currentProfileUserId = userId;
+          
+          // 팔로우 버튼 표시 (로그인한 경우에만)
+          if (currentUser.id) {
+            document.getElementById('follow-button-container').style.display = 'block';
+            
+            // 팔로우 상태 확인
+            try {
+              const followStatus = await SupabaseClient.Database.checkFollowStatus(currentUser.id, userId);
+              if (followStatus.success) {
+                isFollowing = followStatus.following;
+                const followBtn = document.getElementById('follow-btn');
+                const followText = document.getElementById('follow-text');
+                
+                if (isFollowing) {
+                  followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#b2cae5] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full';
+                  followText.textContent = '팔로잉';
+                } else {
+                  followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full';
+                  followText.textContent = '팔로우';
+                }
+              }
+            } catch (error) {
+              console.error('Follow status check error:', error);
+            }
+          }
+          
+          // TODO: 해당 사용자의 프로필 정보 로드
+          document.getElementById('profile-username').textContent = `사용자 ${userId}`;
+          document.getElementById('profile-bio').textContent = '다른 사용자의 프로필입니다.';
+        } else {
+          // 자신의 프로필 또는 기본 프로필
+          currentProfileUserId = currentUser.id;
+          document.getElementById('profile-username').textContent = currentUser.username || '내 프로필';
+          document.getElementById('profile-bio').textContent = currentUser.bio || '나의 작품을 공유하는 공간입니다.';
+        }
+      }
+
+      // 페이지 로드 시 실행
+      document.addEventListener('DOMContentLoaded', loadProfile);
 
       function switchTab(tab) {
         const postsTab = document.getElementById('posts-tab');

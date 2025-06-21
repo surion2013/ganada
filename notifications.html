@@ -56,6 +56,17 @@
     </div>
 
     <script>
+      // 페이지 로드 시 로그인 체크
+      function checkLoginRequired() {
+        const currentUser = JSON.parse(localStorage.getItem('ganada-user') || '{}');
+        if (!currentUser.id) {
+          alert('알림을 확인하려면 로그인이 필요합니다.');
+          window.location.href = 'login.html';
+          return false;
+        }
+        return true;
+      }
+
       function goToPost(postId) {
         // 포스트 상세 페이지로 이동
         window.location.href = `artwork.html?post=${postId}`;
@@ -94,6 +105,11 @@
 
       // 모든 알림 항목에 클릭 이벤트 추가
       document.addEventListener('DOMContentLoaded', function() {
+        // 로그인 체크
+        if (!checkLoginRequired()) {
+          return;
+        }
+
         const notificationItems = document.querySelectorAll('[onclick^="goTo"]');
         notificationItems.forEach(item => {
           item.addEventListener('click', function() {

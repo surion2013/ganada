@@ -94,6 +94,22 @@
     <script>
       let selectedImage = null;
 
+      // 페이지 로드 시 로그인 체크
+      function checkLoginRequired() {
+        const currentUser = JSON.parse(localStorage.getItem('ganada-user') || '{}');
+        if (!currentUser.id) {
+          alert('작품을 업로드하려면 로그인이 필요합니다.');
+          window.location.href = 'login.html';
+          return false;
+        }
+        return true;
+      }
+
+      // 페이지 로드 시 실행
+      document.addEventListener('DOMContentLoaded', function() {
+        checkLoginRequired();
+      });
+
       function handleFileSelect(event) {
         const file = event.target.files[0];
         if (file) {

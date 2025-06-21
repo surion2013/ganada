@@ -82,6 +82,7 @@
         <div id="footer-container"></div>
     </div>
 
+    <script src="supabase-client.js"></script>
     <script>
         // Search data will be loaded from Supabase
         let searchData = {
@@ -91,6 +92,66 @@
         };
 
         let currentTab = 'top';
+
+        // 로그인 체크 함수
+        function checkLoginForFollow() {
+            const user = JSON.parse(localStorage.getItem('ganada-user') || '{}');
+            if (!user.id) {
+                alert('팔로우하려면 로그인이 필요합니다.');
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // 검색 결과에서 팔로우 토글
+        async function toggleFollowFromSearch(userId, buttonElement) {
+            // 로그인 체크
+            if (!checkLoginForFollow()) {
+                return;
+            }
+
+            const currentUser = JSON.parse(localStorage.getItem('ganada-user') || '{}');
+            
+            // 자기 자신을 팔로우할 수 없음
+            if (currentUser.id === userId) {
+                alert('자기 자신을 팔로우할 수 없습니다.');
+                return;
+            }
+
+            // 버튼 상태 저장
+            const originalText = buttonElement.textContent;
+            const isCurrentlyFollowing = originalText === '팔로잉';
+
+            // 버튼 비활성화
+            buttonElement.disabled = true;
+            buttonElement.textContent = '처리 중...';
+
+            try {
+                // Supabase를 통해 팔로우 토글
+                const result = await SupabaseClient.Database.toggleFollow(currentUser.id, userId);
+                
+                if (result.success) {
+                    if (result.following) {
+                        buttonElement.textContent = '팔로잉';
+                        buttonElement.className = 'px-4 py-1 text-xs font-medium rounded-lg bg-[#9bb5d9] text-[#121416] hover:bg-[#8aa8d0] transition-colors';
+                    } else {
+                        buttonElement.textContent = '팔로우';
+                        buttonElement.className = 'px-4 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors';
+                    }
+                } else {
+                    alert('팔로우 처리 중 오류가 발생했습니다.');
+                    buttonElement.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Follow toggle error:', error);
+                alert('팔로우 처리 중 오류가 발생했습니다.');
+                buttonElement.textContent = originalText;
+            } finally {
+                // 버튼 재활성화
+                buttonElement.disabled = false;
+            }
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -175,11 +236,14 @@
                             `;
                         case 'account':
                             return `
-                                <div class="flex flex-col items-center p-4 bg-[#f8f9fa] rounded-xl hover:bg-[#f0f2f4] transition-colors cursor-pointer" onclick="viewProfile('${item.username}')">
-                                    <div class="w-16 h-16 bg-center bg-no-repeat bg-cover rounded-full mb-3" style="background-image: url('${item.avatar}')"></div>
-                                    <p class="text-sm font-bold text-[#111418] mb-1">${item.name}</p>
-                                    <p class="text-xs text-[#637488] mb-2">@${item.username}</p>
-                                    <p class="text-xs text-[#637488]">팔로워 ${item.followers}</p>
+                                <div class="flex flex-col items-center p-4 bg-[#f8f9fa] rounded-xl hover:bg-[#f0f2f4] transition-colors">
+                                    <div class="w-16 h-16 bg-center bg-no-repeat bg-cover rounded-full mb-3 cursor-pointer" style="background-image: url('${item.avatar}')" onclick="viewProfile('${item.username}')"></div>
+                                    <p class="text-sm font-bold text-[#111418] mb-1 cursor-pointer" onclick="viewProfile('${item.username}')">${item.name}</p>
+                                    <p class="text-xs text-[#637488] mb-2 cursor-pointer" onclick="viewProfile('${item.username}')">@${item.username}</p>
+                                    <p class="text-xs text-[#637488] mb-3">팔로워 ${item.followers}</p>
+                                    <button class="px-4 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors" onclick="toggleFollowFromSearch('${item.id}', this)">
+                                        팔로우
+                                    </button>
                                 </div>
                             `;
                         case 'tag':
