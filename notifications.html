@@ -1,143 +1,506 @@
-<html>
-  <head>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link
-      rel="stylesheet"
-      as="style"
-      onload="this.rel='stylesheet'"
-      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800"
-    />
-
-    <title>GaNaDa - 알림</title>
+    <title>알림 - GaNaDa</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
     <script src="navigation.js"></script>
-  </head>
-  <body>
-    <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
-      <div class="layout-container flex h-full grow flex-col min-h-screen">
-        <div id="navigation-container"></div>
-        <div class="px-4 md:px-40 flex flex-1 justify-center py-5">
-          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <div class="flex flex-wrap justify-between gap-3 p-4">
-              <p class="text-[#121416] tracking-light text-3xl md:text-[32px] font-bold leading-tight min-w-72">Notifications</p>
-            </div>
-            <!-- Notifications will be loaded from Supabase -->
-            <div class="flex flex-col items-center justify-center py-20" id="notifications-container">
-                <div class="text-[#6a7581] mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
-                    </svg>
+</head>
+<body>
+    <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden" style="font-family: 'Plus Jakarta Sans', 'Noto Sans', sans-serif;">
+        <div class="layout-container flex h-full grow flex-col min-h-screen">
+            <div id="navigation-container"></div>
+
+            <!-- Main Content -->
+            <div class="px-4 md:px-40 flex flex-1 justify-center py-5">
+                <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+                    
+                    <!-- Header -->
+                    <div class="flex flex-wrap justify-between items-center gap-3 p-4">
+                        <h1 class="text-[#121416] tracking-light text-3xl md:text-[32px] font-bold leading-tight">알림</h1>
+                        <div class="flex items-center gap-2">
+                            <!-- 모두 읽음 처리 버튼 -->
+                            <button id="mark-all-read" class="hidden px-4 py-2 text-sm font-medium text-[#637488] hover:text-[#121416] hover:bg-gray-100 rounded-lg transition-colors">
+                                모두 읽음
+                            </button>
+                            <!-- 안읽은 알림 수 -->
+                            <span id="unread-count" class="hidden px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full"></span>
+                        </div>
+                    </div>
+
+                    <!-- 필터 탭 -->
+                    <div class="px-4 pb-3">
+                        <div class="flex border-b border-[#dce0e5] gap-6">
+                            <button class="notification-tab flex flex-col items-center justify-center border-b-[3px] border-b-[#121416] text-[#121416] pb-[13px] pt-4" data-filter="all">
+                                <p class="text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]">전체</p>
+                            </button>
+                            <button class="notification-tab flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#637488] pb-[13px] pt-4" data-filter="like">
+                                <p class="text-[#637488] text-sm font-bold leading-normal tracking-[0.015em]">좋아요</p>
+                            </button>
+                            <button class="notification-tab flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#637488] pb-[13px] pt-4" data-filter="comment">
+                                <p class="text-[#637488] text-sm font-bold leading-normal tracking-[0.015em]">댓글</p>
+                            </button>
+                            <button class="notification-tab flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-[#637488] pb-[13px] pt-4" data-filter="follow">
+                                <p class="text-[#637488] text-sm font-bold leading-normal tracking-[0.015em]">팔로우</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 알림 목록 -->
+                    <div id="notifications-container" class="flex flex-col">
+                        <!-- 알림 항목들이 여기에 동적으로 추가됩니다 -->
+                    </div>
+
+                    <!-- 로딩 상태 -->
+                    <div id="loading" class="flex items-center justify-center py-20">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#121416]"></div>
+                    </div>
+
+                    <!-- 빈 상태 -->
+                    <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20">
+                        <div class="text-[#637488] mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64px" height="64px" fill="currentColor" viewBox="0 0 256 256">
+                                <path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
+                            </svg>
+                        </div>
+                        <p class="text-[#637488] text-xl md:text-lg font-medium mb-2">새로운 알림이 없습니다</p>
+                        <p class="text-[#637488] text-base md:text-sm">새로운 활동이 있으면 여기에 표시됩니다</p>
+                    </div>
+
+                    <!-- 더 불러오기 버튼 -->
+                    <div id="load-more-container" class="hidden flex justify-center p-4">
+                        <button id="load-more-btn" class="px-6 py-3 text-sm font-medium text-[#121416] border border-[#dce0e5] rounded-lg hover:bg-gray-50 transition-colors">
+                            더 많은 알림 보기
+                        </button>
+                    </div>
                 </div>
-                <p class="text-[#6a7581] text-xl md:text-lg font-medium mb-2">새로운 알림이 없습니다</p>
-                <p class="text-[#6a7581] text-base md:text-sm">새로운 활동이 있으면 여기에 표시됩니다</p>
             </div>
-          </div>
         </div>
-                 <footer class="border-t border-solid border-t-[#f0f2f4] px-4 md:px-10 py-2 md:py-3 mt-auto">
-             <div class="flex flex-col items-center justify-center gap-0.5 md:gap-1">
-                 <div class="flex items-center gap-1 md:gap-2 text-[#6a7581]">
-                     <div class="size-2.5 md:size-3">
-                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                             <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
-                         </svg>
-                     </div>
-                     <span class="text-xs md:text-sm font-medium">GaNaDa</span>
-                 </div>
-                 <p class="text-[#6a7581] text-xs text-center leading-none md:leading-tight">
-                     © 2025 UJUSOL. All rights reserved.
-                 </p>
-             </div>
-         </footer>
-      </div>
+        <div id="footer-container"></div>
     </div>
 
     <script>
-      // 페이지 로드 시 로그인 체크
-      function checkLoginRequired() {
-        const currentUser = JSON.parse(localStorage.getItem('ganada-user') || '{}');
-        if (!currentUser.id) {
-          alert('알림을 확인하려면 로그인이 필요합니다.');
-          return false;
-        }
-        return true;
-      }
+        // 전역 변수
+        let currentUser = null;
+        let currentFilter = 'all';
+        let currentPage = 0;
+        let isLoading = false;
+        let hasMoreNotifications = true;
+        const NOTIFICATIONS_PER_PAGE = 20;
 
-      function goToPost(postId) {
-        // 포스트 상세 페이지로 이동
-        window.location.href = `artwork.html?post=${postId}`;
-      }
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                initNavigation('notifications');
+                
+                // 로그인 상태 확인
+                const { data: { user } } = await supabase.auth.getUser();
+                currentUser = user;
+                
+                if (!currentUser) {
+                    alert('알림을 확인하려면 로그인이 필요합니다.');
+                    return;
+                }
 
-      function goToProfile(username) {
-        // 프로필 페이지로 이동
-        window.location.href = `profile.html?user=${username}`;
-      }
-
-      function loadMoreNotifications() {
-        const button = document.getElementById('load-more-btn');
-        button.innerHTML = '<span class="truncate">로딩 중...</span>';
-        button.disabled = true;
-
-        // 더 많은 알림을 로드하는 시뮬레이션
-        setTimeout(() => {
-          // 실제 앱에서는 서버에서 더 많은 알림을 가져올 것
-          console.log('Loading more notifications...');
-          
-          // 버튼 복원
-          button.innerHTML = '<span class="truncate">더 많은 알림 보기</span>';
-          button.disabled = false;
-          
-          // 실제로는 더 많은 알림 항목들을 DOM에 추가
-          alert('모든 알림을 확인했습니다!');
-          button.style.display = 'none';
-        }, 1500);
-      }
-
-      // 알림을 읽음으로 표시하는 함수
-      function markAsRead(element) {
-        element.style.backgroundColor = '#f8f9fa';
-        element.style.opacity = '0.7';
-      }
-
-      // 모든 알림 항목에 클릭 이벤트 추가
-      document.addEventListener('DOMContentLoaded', function() {
-        // 로그인 체크
-        if (!checkLoginRequired()) {
-          return;
-        }
-
-        const notificationItems = document.querySelectorAll('[onclick^="goTo"]');
-        notificationItems.forEach(item => {
-          item.addEventListener('click', function() {
-            markAsRead(this);
-          });
+                // 초기 알림 로드
+                await loadNotifications();
+                setupEventListeners();
+                setupRealtimeSubscription();
+                
+            } catch (error) {
+                console.error('페이지 로드 중 오류:', error);
+                showEmptyState();
+            }
         });
 
-        // 알림 수를 시뮬레이션 (실제 앱에서는 서버에서 가져올 것)
-        console.log('Loaded notifications page with', notificationItems.length, 'notifications');
-      });
+        function setupEventListeners() {
+            // 필터 탭 이벤트
+            document.querySelectorAll('.notification-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const filter = this.dataset.filter;
+                    switchFilter(filter);
+                });
+            });
 
-      // 실시간 알림 시뮬레이션
-      function simulateNewNotification() {
-        // 실제 앱에서는 WebSocket이나 푸시 알림을 사용할 것
-        const notifications = [
-          '새로운 좋아요를 받았습니다!',
-          '새로운 댓글이 달렸습니다!',
-          '새로운 팔로워가 생겼습니다!'
-        ];
-        
-        const randomNotification = notifications[Math.floor(Math.random() * notifications.length)];
-        console.log('New notification:', randomNotification);
-      }
+            // 모두 읽음 처리
+            document.getElementById('mark-all-read').addEventListener('click', markAllAsRead);
 
-      // 페이지 로드 후 가끔 새로운 알림 시뮬레이션
-      setInterval(simulateNewNotification, 30000); // 30초마다
-      
-      // 네비게이션 초기화
-      initNavigation('notifications');
+            // 더 불러오기
+            document.getElementById('load-more-btn').addEventListener('click', loadMoreNotifications);
+        }
+
+        // 필터 전환
+        function switchFilter(filter) {
+            currentFilter = filter;
+            currentPage = 0;
+            hasMoreNotifications = true;
+            
+            // 탭 UI 업데이트
+            document.querySelectorAll('.notification-tab').forEach(tab => {
+                const isActive = tab.dataset.filter === filter;
+                tab.classList.toggle('border-b-[#121416]', isActive);
+                tab.classList.toggle('border-b-transparent', !isActive);
+                tab.classList.toggle('text-[#121416]', isActive);
+                tab.classList.toggle('text-[#637488]', !isActive);
+                
+                const p = tab.querySelector('p');
+                p.classList.toggle('text-[#121416]', isActive);
+                p.classList.toggle('text-[#637488]', !isActive);
+            });
+
+            // 알림 다시 로드
+            loadNotifications();
+        }
+
+        // 알림 로드
+        async function loadNotifications(page = 0) {
+            if (isLoading) return;
+            
+            isLoading = true;
+            const loading = document.getElementById('loading');
+            const container = document.getElementById('notifications-container');
+            const emptyState = document.getElementById('empty-state');
+            const loadMoreContainer = document.getElementById('load-more-container');
+
+            if (page === 0) {
+                loading.classList.remove('hidden');
+                container.innerHTML = '';
+                emptyState.classList.add('hidden');
+                loadMoreContainer.classList.add('hidden');
+            }
+
+            try {
+                let query = supabase
+                    .from('notifications')
+                    .select(`
+                        *,
+                        sender:users!notifications_sender_id_fkey(
+                            id,
+                            username,
+                            avatar_url
+                        ),
+                        related_post:posts(
+                            id,
+                            image_url,
+                            title
+                        )
+                    `)
+                    .eq('recipient_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .range(page * NOTIFICATIONS_PER_PAGE, (page + 1) * NOTIFICATIONS_PER_PAGE - 1);
+
+                // 필터 적용
+                if (currentFilter !== 'all') {
+                    query = query.eq('type', currentFilter);
+                }
+
+                const { data: notifications, error } = await query;
+
+                if (error) throw error;
+
+                if (notifications && notifications.length > 0) {
+                    notifications.forEach(notification => {
+                        const notificationElement = createNotificationCard(notification);
+                        container.appendChild(notificationElement);
+                    });
+
+                    hasMoreNotifications = notifications.length === NOTIFICATIONS_PER_PAGE;
+                    currentPage = page;
+
+                    // 더 불러오기 버튼 표시
+                    if (hasMoreNotifications) {
+                        loadMoreContainer.classList.remove('hidden');
+                    }
+
+                    // 안읽은 알림 수 업데이트
+                    updateUnreadCount();
+                } else {
+                    hasMoreNotifications = false;
+                    if (page === 0) {
+                        showEmptyState();
+                    }
+                }
+
+            } catch (error) {
+                console.error('알림 로드 중 오류:', error);
+                if (page === 0) {
+                    showEmptyState();
+                }
+            } finally {
+                loading.classList.add('hidden');
+                isLoading = false;
+            }
+        }
+
+        // 더 많은 알림 로드
+        async function loadMoreNotifications() {
+            if (!hasMoreNotifications || isLoading) return;
+            
+            const button = document.getElementById('load-more-btn');
+            const originalText = button.textContent;
+            button.textContent = '로딩 중...';
+            button.disabled = true;
+
+            try {
+                await loadNotifications(currentPage + 1);
+            } finally {
+                button.textContent = originalText;
+                button.disabled = false;
+                
+                if (!hasMoreNotifications) {
+                    document.getElementById('load-more-container').classList.add('hidden');
+                }
+            }
+        }
+
+        // 알림 카드 생성
+        function createNotificationCard(notification) {
+            const div = document.createElement('div');
+            div.className = `notification-item flex items-start gap-4 p-4 border-b border-[#f0f2f4] hover:bg-gray-50 transition-colors cursor-pointer ${!notification.is_read ? 'bg-blue-50' : ''}`;
+            div.dataset.notificationId = notification.id;
+            div.onclick = () => handleNotificationClick(notification);
+
+            // 알림 타입별 아이콘
+            const iconMap = {
+                like: { icon: '❤️', color: 'text-red-500' },
+                comment: { icon: '💬', color: 'text-blue-500' },
+                follow: { icon: '👤', color: 'text-green-500' },
+                post: { icon: '📷', color: 'text-purple-500' }
+            };
+
+            const typeInfo = iconMap[notification.type] || { icon: '🔔', color: 'text-gray-500' };
+
+            div.innerHTML = `
+                <div class="flex-shrink-0">
+                    ${notification.sender?.avatar_url ? 
+                        `<div class="w-12 h-12 bg-center bg-no-repeat bg-cover rounded-full" style="background-image: url('${notification.sender.avatar_url}')"></div>` :
+                        `<div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-lg">${typeInfo.icon}</div>`
+                    }
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-[#121416] mb-1">${notification.title}</p>
+                            <p class="text-sm text-[#637488] leading-relaxed">${notification.message}</p>
+                            <p class="text-xs text-[#9ca3af] mt-2">${formatTimeAgo(notification.created_at)}</p>
+                        </div>
+                        ${notification.related_post?.image_url ? 
+                            `<div class="w-12 h-12 bg-center bg-no-repeat bg-cover rounded ml-4" style="background-image: url('${notification.related_post.image_url}')"></div>` :
+                            ''
+                        }
+                    </div>
+                    ${!notification.is_read ? 
+                        `<div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>` :
+                        ''
+                    }
+                </div>
+            `;
+
+            return div;
+        }
+
+        // 알림 클릭 처리
+        async function handleNotificationClick(notification) {
+            try {
+                // 읽음 처리
+                if (!notification.is_read) {
+                    await markAsRead(notification.id);
+                }
+
+                // 관련 페이지로 이동
+                if (notification.type === 'follow') {
+                    if (notification.sender) {
+                        window.location.href = `profile.html?user=${notification.sender.username}`;
+                    }
+                } else if (notification.related_post_id) {
+                    window.location.href = `artwork.html?id=${notification.related_post_id}`;
+                }
+
+            } catch (error) {
+                console.error('알림 클릭 처리 중 오류:', error);
+            }
+        }
+
+        // 개별 알림 읽음 처리
+        async function markAsRead(notificationId) {
+            try {
+                const { error } = await supabase
+                    .from('notifications')
+                    .update({ is_read: true })
+                    .eq('id', notificationId);
+
+                if (error) throw error;
+
+                // UI 업데이트
+                const notificationElement = document.querySelector(`[data-notification-id="${notificationId}"]`);
+                if (notificationElement) {
+                    notificationElement.classList.remove('bg-blue-50');
+                    const unreadDot = notificationElement.querySelector('.bg-blue-500');
+                    if (unreadDot) {
+                        unreadDot.remove();
+                    }
+                }
+
+                updateUnreadCount();
+
+            } catch (error) {
+                console.error('알림 읽음 처리 중 오류:', error);
+            }
+        }
+
+        // 모든 알림 읽음 처리
+        async function markAllAsRead() {
+            try {
+                const { error } = await supabase
+                    .from('notifications')
+                    .update({ is_read: true })
+                    .eq('recipient_id', currentUser.id)
+                    .eq('is_read', false);
+
+                if (error) throw error;
+
+                // UI 업데이트
+                document.querySelectorAll('.notification-item').forEach(item => {
+                    item.classList.remove('bg-blue-50');
+                    const unreadDot = item.querySelector('.bg-blue-500');
+                    if (unreadDot) {
+                        unreadDot.remove();
+                    }
+                });
+
+                updateUnreadCount();
+
+            } catch (error) {
+                console.error('모든 알림 읽음 처리 중 오류:', error);
+            }
+        }
+
+        // 안읽은 알림 수 업데이트
+        async function updateUnreadCount() {
+            try {
+                const { count, error } = await supabase
+                    .from('notifications')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('recipient_id', currentUser.id)
+                    .eq('is_read', false);
+
+                if (error) throw error;
+
+                const unreadCountElement = document.getElementById('unread-count');
+                const markAllReadBtn = document.getElementById('mark-all-read');
+
+                if (count > 0) {
+                    unreadCountElement.textContent = count;
+                    unreadCountElement.classList.remove('hidden');
+                    markAllReadBtn.classList.remove('hidden');
+                } else {
+                    unreadCountElement.classList.add('hidden');
+                    markAllReadBtn.classList.add('hidden');
+                }
+
+            } catch (error) {
+                console.error('안읽은 알림 수 업데이트 중 오류:', error);
+            }
+        }
+
+        // 실시간 알림 구독
+        function setupRealtimeSubscription() {
+            if (!currentUser) return;
+
+            const subscription = supabase
+                .channel('notifications')
+                .on('postgres_changes', {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'notifications',
+                    filter: `recipient_id=eq.${currentUser.id}`
+                }, (payload) => {
+                    console.log('새로운 알림:', payload.new);
+                    handleNewNotification(payload.new);
+                })
+                .on('postgres_changes', {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'notifications',
+                    filter: `recipient_id=eq.${currentUser.id}`
+                }, (payload) => {
+                    console.log('알림 업데이트:', payload.new);
+                    updateUnreadCount();
+                })
+                .subscribe();
+        }
+
+        // 새로운 알림 처리
+        async function handleNewNotification(notification) {
+            // 현재 필터에 맞는 알림인지 확인
+            if (currentFilter === 'all' || currentFilter === notification.type) {
+                // 알림 상세 정보 가져오기
+                const { data: fullNotification, error } = await supabase
+                    .from('notifications')
+                    .select(`
+                        *,
+                        sender:users!notifications_sender_id_fkey(
+                            id,
+                            username,
+                            avatar_url
+                        ),
+                        related_post:posts(
+                            id,
+                            image_url,
+                            title
+                        )
+                    `)
+                    .eq('id', notification.id)
+                    .single();
+
+                if (!error && fullNotification) {
+                    // 맨 위에 새 알림 추가
+                    const container = document.getElementById('notifications-container');
+                    const notificationElement = createNotificationCard(fullNotification);
+                    container.insertBefore(notificationElement, container.firstChild);
+
+                    // 빈 상태 숨기기
+                    document.getElementById('empty-state').classList.add('hidden');
+                }
+            }
+
+            // 안읽은 알림 수 업데이트
+            updateUnreadCount();
+        }
+
+        // 빈 상태 표시
+        function showEmptyState() {
+            document.getElementById('empty-state').classList.remove('hidden');
+            document.getElementById('notifications-container').innerHTML = '';
+        }
+
+        // 시간 포맷팅
+        function formatTimeAgo(dateString) {
+            const now = new Date();
+            const date = new Date(dateString);
+            const diffInSeconds = Math.floor((now - date) / 1000);
+
+            if (diffInSeconds < 60) {
+                return '방금 전';
+            } else if (diffInSeconds < 3600) {
+                const minutes = Math.floor(diffInSeconds / 60);
+                return `${minutes}분 전`;
+            } else if (diffInSeconds < 86400) {
+                const hours = Math.floor(diffInSeconds / 3600);
+                return `${hours}시간 전`;
+            } else if (diffInSeconds < 604800) {
+                const days = Math.floor(diffInSeconds / 86400);
+                return `${days}일 전`;
+            } else {
+                return date.toLocaleDateString('ko-KR');
+            }
+        }
     </script>
-  </body>
+</body>
 </html> 
