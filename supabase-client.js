@@ -184,6 +184,18 @@ const Database = {
           .insert({ post_id: postId, user_id: userId });
         
         if (insertError) throw insertError;
+
+        // 포스트 작성자에게 좋아요 알림 생성 (자신의 포스트가 아닌 경우에만)
+        const { data: post } = await supabase
+          .from('posts')
+          .select('user_id')
+          .eq('id', postId)
+          .single();
+        
+        if (post && post.user_id !== userId) {
+          await this.createNotification(post.user_id, 'like', null, userId, postId);
+        }
+        
         return { success: true, liked: true };
       }
     } catch (error) {
@@ -211,6 +223,18 @@ const Database = {
         `);
       
       if (error) throw error;
+
+      // 포스트 작성자에게 댓글 알림 생성 (자신의 포스트가 아닌 경우에만)
+      const { data: post } = await supabase
+        .from('posts')
+        .select('user_id')
+        .eq('id', postId)
+        .single();
+      
+      if (post && post.user_id !== userId) {
+        await this.createNotification(post.user_id, 'comment', content, userId, postId);
+      }
+
       return { success: true, data };
     } catch (error) {
       console.error('Add comment error:', error);
@@ -237,6 +261,228 @@ const Database = {
       return { success: true, data };
     } catch (error) {
       console.error('Get comments error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 팔로우 토글
+  async toggleFollow(followerId, followingId) {
+    try {
+      // 기존 팔로우 확인
+      const { data: existingFollow, error: checkError } = await supabase
+        .from('follows')
+        .select('id')
+        .eq('follower_id', followerId)
+        .eq('following_id', followingId)
+        .single();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw checkError;
+      }
+
+      if (existingFollow) {
+        // 언팔로우
+        const { error: deleteError } = await supabase
+          .from('follows')
+          .delete()
+          .eq('follower_id', followerId)
+          .eq('following_id', followingId);
+        
+        if (deleteError) throw deleteError;
+        return { success: true, following: false };
+      } else {
+        // 팔로우
+        const { error: insertError } = await supabase
+          .from('follows')
+          .insert({ 
+            follower_id: followerId, 
+            following_id: followingId 
+          });
+        
+        if (insertError) throw insertError;
+
+        // 팔로우 알림 생성
+        await this.createNotification(followingId, 'follow', null, followerId);
+        
+        return { success: true, following: true };
+      }
+    } catch (error) {
+      console.error('Toggle follow error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 팔로우 상태 확인
+  async checkFollowStatus(followerId, followingId) {
+    try {
+      const { data, error } = await supabase
+        .from('follows')
+        .select('id')
+        .eq('follower_id', followerId)
+        .eq('following_id', followingId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+
+      return { success: true, following: !!data };
+    } catch (error) {
+      console.error('Check follow status error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 팔로워 목록 가져오기
+  async getFollowers(userId, limit = 20, offset = 0) {
+    try {
+      const { data, error } = await supabase
+        .from('follows')
+        .select(`
+          *,
+          users!follows_follower_id_fkey (
+            id,
+            username,
+            avatar_url,
+            full_name
+          )
+        `)
+        .eq('following_id', userId)
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
+      
+      if (error) throw error;
+      return { success: true, data };
+    } catch (error) {
+      console.error('Get followers error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 팔로잉 목록 가져오기
+  async getFollowing(userId, limit = 20, offset = 0) {
+    try {
+      const { data, error } = await supabase
+        .from('follows')
+        .select(`
+          *,
+          users!follows_following_id_fkey (
+            id,
+            username,
+            avatar_url,
+            full_name
+          )
+        `)
+        .eq('follower_id', userId)
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
+      
+      if (error) throw error;
+      return { success: true, data };
+    } catch (error) {
+      console.error('Get following error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 알림 생성
+  async createNotification(userId, type, content, relatedUserId = null, relatedPostId = null) {
+    try {
+      const { data, error } = await supabase
+        .from('notifications')
+        .insert({
+          user_id: userId,
+          type,
+          content,
+          related_user_id: relatedUserId,
+          related_post_id: relatedPostId
+        })
+        .select();
+      
+      if (error) throw error;
+      return { success: true, data };
+    } catch (error) {
+      console.error('Create notification error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 사용자 알림 가져오기
+  async getNotifications(userId, limit = 20, offset = 0) {
+    try {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select(`
+          *,
+          related_user:users!notifications_related_user_id_fkey (
+            username,
+            avatar_url
+          ),
+          related_post:posts!notifications_related_post_id_fkey (
+            image_url,
+            caption
+          )
+        `)
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
+      
+      if (error) throw error;
+      return { success: true, data };
+    } catch (error) {
+      console.error('Get notifications error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 알림 읽음 처리
+  async markNotificationAsRead(notificationId) {
+    try {
+      const { data, error } = await supabase
+        .from('notifications')
+        .update({ read: true })
+        .eq('id', notificationId)
+        .select();
+      
+      if (error) throw error;
+      return { success: true, data };
+    } catch (error) {
+      console.error('Mark notification as read error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 모든 알림 읽음 처리
+  async markAllNotificationsAsRead(userId) {
+    try {
+      const { data, error } = await supabase
+        .from('notifications')
+        .update({ read: true })
+        .eq('user_id', userId)
+        .eq('read', false)
+        .select();
+      
+      if (error) throw error;
+      return { success: true, data };
+    } catch (error) {
+      console.error('Mark all notifications as read error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 읽지 않은 알림 수 가져오기
+  async getUnreadNotificationCount(userId) {
+    try {
+      const { count, error } = await supabase
+        .from('notifications')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('read', false);
+      
+      if (error) throw error;
+      return { success: true, count };
+    } catch (error) {
+      console.error('Get unread notification count error:', error);
       return { success: false, error: error.message };
     }
   }
