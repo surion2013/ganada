@@ -348,6 +348,7 @@
         const { data: users, error } = await supabase
           .from('users')
           .select('*')
+          .neq('id', currentUser?.id || '') // 내 계정 제외
           .order('followers_count', { ascending: false })
           .limit(20);
 
@@ -396,6 +397,7 @@
           .from('users')
           .select('*')
           .or(`username.ilike.%${query}%,full_name.ilike.%${query}%`)
+          .neq('id', currentUser?.id || '') // 내 계정 제외
           .order('followers_count', { ascending: false })
           .limit(20);
 
@@ -490,6 +492,7 @@
           const { data: artists, error } = await supabase
             .from('users')
             .select('*')
+            .neq('id', currentUser?.id || '') // 내 계정 제외
             .order('followers_count', { ascending: false })
             .limit(10);
 
@@ -608,7 +611,6 @@
       async function toggleFollow(userId, button) {
         if (!currentUser) {
           alert('로그인이 필요합니다.');
-          window.location.href = 'login.html';
           return;
         }
 
