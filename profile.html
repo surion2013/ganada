@@ -171,7 +171,10 @@
         followText.textContent = '처리 중...';
 
         try {
-          if (isFollowing) {
+          // 현재 팔로우 상태를 다시 한번 확인 (동기화)
+          const currentFollowStatus = await checkFollowStatus(currentUser.id, currentProfileUserId);
+          
+          if (currentFollowStatus) {
             // 언팔로우
             const { error } = await SupabaseClient.client
               .from('follows')
@@ -179,7 +182,10 @@
               .eq('follower_id', currentUser.id)
               .eq('following_id', currentProfileUserId);
 
-            if (error) throw error;
+            if (error) {
+              console.error('Unfollow error:', error);
+              throw new Error('언팔로우 중 오류가 발생했습니다.');
+            }
             
             isFollowing = false;
             followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#ff8c00] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#e67e00] transition-colors';
@@ -188,15 +194,20 @@
             // 팔로워 수 감소
             profileData.followers_count = Math.max(0, profileData.followers_count - 1);
           } else {
-            // 팔로우
+            // 팔로우 - upsert 사용으로 중복 방지
             const { error } = await SupabaseClient.client
               .from('follows')
-              .insert([{
+              .upsert([{
                 follower_id: currentUser.id,
                 following_id: currentProfileUserId
-              }]);
+              }], {
+                onConflict: 'follower_id,following_id'
+              });
 
-            if (error) throw error;
+            if (error) {
+              console.error('Follow error:', error);
+              throw new Error('팔로우 중 오류가 발생했습니다.');
+            }
             
             isFollowing = true;
             followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#6b7280] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#4b5563] transition-colors';
@@ -211,7 +222,32 @@
           
         } catch (error) {
           console.error('Follow toggle error:', error);
-          alert('팔로우 처리 중 오류가 발생했습니다.');
+          
+          // 에러 메시지 개선
+          let errorMessage = '팔로우 처리 중 오류가 발생했습니다.';
+          if (error.message.includes('duplicate')) {
+            errorMessage = '이미 팔로우 상태입니다. 페이지를 새로고침 해주세요.';
+          } else if (error.message.includes('violates')) {
+            errorMessage = '데이터베이스 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+          }
+          
+          alert(errorMessage);
+          
+          // 오류 발생 시 팔로우 상태 재확인
+          try {
+            const actualStatus = await checkFollowStatus(currentUser.id, currentProfileUserId);
+            isFollowing = actualStatus;
+            
+            if (isFollowing) {
+              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#6b7280] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#4b5563] transition-colors';
+              followText.textContent = '팔로잉';
+            } else {
+              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#ff8c00] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#e67e00] transition-colors';
+              followText.textContent = '팔로우';
+            }
+          } catch (statusError) {
+            console.error('Status check error:', statusError);
+          }
         } finally {
           // 버튼 재활성화
           followBtn.disabled = false;

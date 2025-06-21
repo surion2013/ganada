@@ -612,8 +612,25 @@
           return;
         }
 
+        // 버튼 비활성화 (중복 클릭 방지)
+        const originalText = button.textContent.trim();
+        button.disabled = true;
+        button.textContent = '처리 중...';
+
         try {
-          const isFollowing = button.textContent.trim() === '팔로잉';
+          // 현재 팔로우 상태 확인
+          const { data: existingFollow, error: checkError } = await supabase
+            .from('follows')
+            .select('id')
+            .eq('follower_id', currentUser.id)
+            .eq('following_id', userId)
+            .single();
+
+          if (checkError && checkError.code !== 'PGRST116') {
+            throw checkError;
+          }
+
+          const isFollowing = !!existingFollow;
           
           if (isFollowing) {
             // 언팔로우
@@ -623,20 +640,28 @@
               .eq('follower_id', currentUser.id)
               .eq('following_id', userId);
 
-            if (error) throw error;
+            if (error) {
+              console.error('Unfollow error:', error);
+              throw new Error('언팔로우 중 오류가 발생했습니다.');
+            }
 
             button.textContent = '팔로우';
             button.className = 'follow-btn px-4 py-1 text-xs font-medium rounded-lg bg-[#121416] text-white hover:opacity-80 transition-opacity';
           } else {
-            // 팔로우
+            // 팔로우 - upsert 사용으로 중복 방지
             const { error } = await supabase
               .from('follows')
-              .insert({
+              .upsert({
                 follower_id: currentUser.id,
                 following_id: userId
+              }, {
+                onConflict: 'follower_id,following_id'
               });
 
-            if (error) throw error;
+            if (error) {
+              console.error('Follow error:', error);
+              throw new Error('팔로우 중 오류가 발생했습니다.');
+            }
 
             button.textContent = '팔로잉';
             button.className = 'follow-btn px-4 py-1 text-xs font-medium rounded-lg bg-gray-200 text-[#121416] hover:opacity-80 transition-opacity';
@@ -644,7 +669,22 @@
 
         } catch (error) {
           console.error('팔로우 처리 중 오류:', error);
-          alert('팔로우 처리 중 오류가 발생했습니다.');
+          
+          // 에러 메시지 개선
+          let errorMessage = '팔로우 처리 중 오류가 발생했습니다.';
+          if (error.message.includes('duplicate')) {
+            errorMessage = '이미 팔로우 상태입니다. 페이지를 새로고침 해주세요.';
+          } else if (error.message.includes('violates')) {
+            errorMessage = '데이터베이스 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+          }
+          
+          alert(errorMessage);
+          
+          // 오류 발생 시 원래 상태로 복원
+          button.textContent = originalText;
+        } finally {
+          // 버튼 재활성화
+          button.disabled = false;
         }
       }
 
