@@ -345,10 +345,16 @@
 
       // 인기 계정 로드
       async function loadPopularAccounts() {
-        const { data: users, error } = await supabase
+        let query = supabase
           .from('users')
-          .select('*')
-          .neq('id', currentUser?.id || '') // 내 계정 제외
+          .select('*');
+        
+        // 로그인한 사용자만 내 계정 제외
+        if (currentUser?.id) {
+          query = query.neq('id', currentUser.id);
+        }
+        
+        const { data: users, error } = await query
           .order('followers_count', { ascending: false })
           .limit(20);
 
@@ -393,11 +399,17 @@
 
       // 계정 검색
       async function searchAccounts(query) {
-        const { data: users, error } = await supabase
+        let searchQuery = supabase
           .from('users')
           .select('*')
-          .or(`username.ilike.%${query}%,full_name.ilike.%${query}%`)
-          .neq('id', currentUser?.id || '') // 내 계정 제외
+          .or(`username.ilike.%${query}%,full_name.ilike.%${query}%`);
+        
+        // 로그인한 사용자만 내 계정 제외
+        if (currentUser?.id) {
+          searchQuery = searchQuery.neq('id', currentUser.id);
+        }
+        
+        const { data: users, error } = await searchQuery
           .order('followers_count', { ascending: false })
           .limit(20);
 
@@ -489,10 +501,16 @@
         artistsContainer.innerHTML = '';
 
         try {
-          const { data: artists, error } = await supabase
+          let query = supabase
             .from('users')
-            .select('*')
-            .neq('id', currentUser?.id || '') // 내 계정 제외
+            .select('*');
+          
+          // 로그인한 사용자만 내 계정 제외
+          if (currentUser?.id) {
+            query = query.neq('id', currentUser.id);
+          }
+          
+          const { data: artists, error } = await query
             .order('followers_count', { ascending: false })
             .limit(10);
 
