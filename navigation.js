@@ -2,17 +2,8 @@
 function createNavigation(currentPage = '') {
     return `
         <header class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f4] px-4 md:px-10 py-3 md:py-3">
-            <!-- 모바일에서도 가운데 정렬 -->
-            <div class="flex md:hidden flex-1 items-center justify-center relative z-10">
-                <div class="flex items-center gap-2 text-[#111418]">
-                    <div class="size-4 flex items-center justify-center">
-                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
-                        </svg>
-                    </div>
-                    <h2 class="text-[#111418] text-lg font-bold leading-none tracking-[-0.015em] cursor-pointer flex items-center" onclick="window.location.href='index.html'">GaNaDa</h2>
-                </div>
-            </div>
+            <!-- 모바일에서는 로고 숨김 -->
+            <div class="hidden"></div>
             
             <!-- PC에서는 가운데 정렬된 컨테이너 -->
             <div class="hidden md:flex flex-1 items-center justify-center">
@@ -36,8 +27,8 @@ function createNavigation(currentPage = '') {
                     </div>
                 </div>
             </div>
-            <!-- 모바일에서 오른쪽 버튼들 (절대 위치) -->
-            <div class="flex md:hidden items-center gap-1 absolute right-4">
+            <!-- 모바일에서 버튼들 (로고 없이 가운데 정렬) -->
+            <div class="flex md:hidden items-center gap-1 flex-1 justify-center">
                 <button
                     class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 bg-[#f0f2f4] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em] ${currentPage === 'home' ? 'border-b-2 border-[#ff8c00]' : ''}"
                     onclick="window.location.href='index.html'"
@@ -96,10 +87,16 @@ function createNavigation(currentPage = '') {
                     </svg>
                 </div>
                 </button>
+                ${currentPage !== 'login' && currentPage !== 'signup' ? `
+                <button
+                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 bg-[#f0f2f4] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em] ${currentPage === 'profile' ? 'border-b-2 border-[#ff8c00]' : ''}"
+                    onclick="window.location.href='profile.html'"
+                    title="Profile"
+                >
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-6" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face')"></div>
+                </button>
+                ` : ''}
             </div>
-            ${currentPage !== 'login' && currentPage !== 'signup' ? `
-            <div class="md:hidden bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer absolute right-2" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face')" onclick="window.location.href='profile.html'"></div>
-            ` : ''}
             
             <!-- PC에서 오른쪽 버튼들 (절대 위치) -->
             <div class="hidden md:flex items-center gap-4 absolute right-10">
