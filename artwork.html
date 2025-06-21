@@ -55,15 +55,15 @@
                     <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer" style="background-image: url('https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=100&h=100&fit=crop&crop=face')" onclick="window.location.href='profile.html'"></div>
                 </div>
             </header>
-            <div class="px-40 flex flex-1 justify-center py-5">
+            <div class="px-4 md:px-40 flex flex-1 justify-center py-5">
                 <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
                     <div class="flex w-full grow bg-white @container p-4">
                         <div class="w-full gap-1 overflow-hidden bg-white @[480px]:gap-2 aspect-[3/2] rounded-xl flex">
                             <div class="w-full bg-center bg-no-repeat bg-cover aspect-auto rounded-xl flex-1" style="background-image: url('https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=533&fit=crop')"></div>
                         </div>
                     </div>
-                    <h3 class="text-[#121416] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Artist Yerin Kim</h3>
-                    <p class="text-[#121416] text-base font-normal leading-normal pb-3 pt-1 px-4">Abstract artwork with vibrant colors and dynamic composition that evokes emotion and movement.</p>
+                    <h3 class="text-[#121416] text-xl md:text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Artist Yerin Kim</h3>
+                    <p class="text-[#121416] text-lg md:text-base font-normal leading-normal pb-3 pt-1 px-4">Abstract artwork with vibrant colors and dynamic composition that evokes emotion and movement.</p>
                     <div class="flex flex-wrap gap-4 px-4 py-2">
                         <div class="flex items-center justify-center gap-2 px-3 py-2 cursor-pointer" onclick="toggleLike()">
                             <div class="text-[#6a7581]" id="heart-icon">
@@ -90,34 +90,34 @@
                             <p class="text-[#6a7581] text-[13px] font-bold leading-normal tracking-[0.015em]">67</p>
                         </div>
                     </div>
-                    <h3 class="text-[#121416] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Comments</h3>
+                    <h3 class="text-[#121416] text-xl md:text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Comments</h3>
                     <div id="comments-container">
                         <div class="flex w-full flex-row items-start justify-start gap-3 p-4">
                             <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b619?w=100&h=100&fit=crop&crop=face')"></div>
                             <div class="flex h-full flex-1 flex-col items-start justify-start">
                                 <div class="flex w-full flex-row items-start justify-start gap-x-3">
-                                    <p class="text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]">Olivia Harper</p>
-                                    <p class="text-[#6a7581] text-sm font-normal leading-normal">2 days ago</p>
+                                    <p class="text-[#121416] text-base md:text-sm font-bold leading-normal tracking-[0.015em]">Olivia Harper</p>
+                                    <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal">2 days ago</p>
                                 </div>
-                                <p class="text-[#121416] text-sm font-normal leading-normal">What an amazing piece! The colors and composition are breathtakingly beautiful.</p>
+                                <p class="text-[#121416] text-base md:text-sm font-normal leading-normal">What an amazing piece! The colors and composition are breathtakingly beautiful.</p>
                             </div>
                         </div>
                         <div class="flex w-full flex-row items-start justify-start gap-3 p-4">
                             <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face')"></div>
                             <div class="flex h-full flex-1 flex-col items-start justify-start">
                                 <div class="flex w-full flex-row items-start justify-start gap-x-3">
-                                    <p class="text-[#121416] text-sm font-bold leading-normal tracking-[0.015em]">Liam Foster</p>
-                                    <p class="text-[#6a7581] text-sm font-normal leading-normal">3 days ago</p>
+                                    <p class="text-[#121416] text-base md:text-sm font-bold leading-normal tracking-[0.015em]">Liam Foster</p>
+                                    <p class="text-[#6a7581] text-base md:text-sm font-normal leading-normal">3 days ago</p>
                                 </div>
-                                <p class="text-[#121416] text-sm font-normal leading-normal">I love the abstract nature of this piece. It really speaks to me.</p>
+                                <p class="text-[#121416] text-base md:text-sm font-normal leading-normal">I love the abstract nature of this piece. It really speaks to me.</p>
                             </div>
                         </div>
                     </div>
                     <div class="flex items-center px-4 py-3 gap-3 @container">
                         <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0" style="background-image: url('https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=100&h=100&fit=crop&crop=face')"></div>
-                        <label class="flex flex-col min-w-40 h-12 flex-1">
+                        <label class="flex flex-col min-w-40 h-12 md:h-12 flex-1">
                             <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
-                                <input placeholder="Add a comment..." class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border-none bg-[#f1f2f4] focus:border-none h-full placeholder:text-[#6a7581] px-4 rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal" id="comment-input" onkeypress="handleCommentSubmit(event)">
+                                <input placeholder="Add a comment..." class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121416] focus:outline-0 focus:ring-0 border-none bg-[#f1f2f4] focus:border-none h-full placeholder:text-[#6a7581] px-4 rounded-r-none border-r-0 pr-2 text-lg md:text-base font-normal leading-normal" id="comment-input" onkeypress="handleCommentSubmit(event)">
                                 <div class="flex border-none bg-[#f1f2f4] items-center justify-center pr-4 rounded-r-xl border-l-0 !pr-2">
                                     <div class="flex items-center gap-4 justify-end">
                                         <button class="min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-8 px-4 bg-[#b2cae5] text-[#121416] text-sm font-medium leading-normal hidden @[480px]:block" onclick="submitComment()">
