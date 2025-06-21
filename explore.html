@@ -14,31 +14,41 @@
     <title>탐색 - GaNaDa</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
+    <!-- Chrome 확장 프로그램 오류 방지 (최우선 실행) -->
+    <script>
+      (function() {
+        const originalConsoleError = console.error;
+        console.error = function(...args) {
+          const message = args.join(' ');
+          if (!message.includes('chrome-extension://') && 
+              !message.includes('Failed to fetch dynamically imported module')) {
+            originalConsoleError.apply(console, args);
+          }
+        };
+        
+        window.addEventListener('error', function(e) {
+          if (e.filename && e.filename.includes('chrome-extension://')) {
+            e.preventDefault();
+            return true;
+          }
+        }, true);
+        
+        window.addEventListener('unhandledrejection', function(e) {
+          if (e.reason && (e.reason.message || e.reason.toString()).includes('chrome-extension://')) {
+            e.preventDefault();
+            return true;
+          }
+        }, true);
+      })();
+    </script>
+    
+    <script>
+      window.tailwind = { config: { silent: true } };
+    </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
     <script src="navigation.js"></script>
-    
-    <!-- Chrome 확장 프로그램 오류 방지 -->
-    <script>
-      // 전역 오류 핸들러 추가
-      window.addEventListener('error', function(e) {
-        // Chrome 확장 프로그램 관련 오류 무시
-        if (e.filename && e.filename.includes('chrome-extension://')) {
-          e.preventDefault();
-          return false;
-        }
-      });
-      
-      // Promise rejection 오류 핸들러 추가
-      window.addEventListener('unhandledrejection', function(e) {
-        // Chrome 확장 프로그램 관련 오류 무시
-        if (e.reason && e.reason.message && e.reason.message.includes('chrome-extension://')) {
-          e.preventDefault();
-          return false;
-        }
-      });
-    </script>
   </head>
   <body>
     <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
