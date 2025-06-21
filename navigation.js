@@ -1,5 +1,5 @@
 // 공통 네비게이션 바 컴포넌트
-function createNavigation(currentPage = '') {
+function createNavigation(currentPage = '', isLoggedIn = false) {
     return `
         <header class="relative flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f0f2f4] px-4 md:px-10 py-3 md:py-3">
             <!-- 모바일에서는 로고 숨김 -->
@@ -25,7 +25,10 @@ function createNavigation(currentPage = '') {
                         <a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'create' ? 'font-bold' : ''}" href="create-post.html">Create</a>
                         <a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'search' ? 'font-bold' : ''}" href="search.html">Search</a>
                         <a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'notifications' ? 'font-bold' : ''}" href="notifications.html">Notifications</a>
-                        <a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'login' ? 'font-bold' : ''}" href="login.html">Login</a>
+                        ${isLoggedIn ? 
+                            `<button class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 cursor-pointer" onclick="handleLogout()">Logout</button>` :
+                            `<a class="text-[#111418] text-sm font-medium leading-none flex items-center h-6 ${currentPage === 'login' ? 'font-bold' : ''}" href="login.html">Login</a>`
+                        }
                     </div>
                 </div>
             </div>
@@ -58,15 +61,26 @@ function createNavigation(currentPage = '') {
                         <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
                     </svg>
                 </button>
-                <button
-                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 bg-[#f0f2f4] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em] ${currentPage === 'login' ? 'border-b-2 border-[#ff8c00]' : ''}"
-                    onclick="window.location.href='login.html'"
-                    title="Login"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M141.66,133.66l-40,40a8,8,0,0,1-11.32-11.32L116.69,136H24a8,8,0,0,1,0-16h92.69L90.34,93.66a8,8,0,0,1,11.32-11.32l40,40A8,8,0,0,1,141.66,133.66ZM192,32H136a8,8,0,0,0,0,16h56V208H136a8,8,0,0,0,0,16h56a16,16,0,0,0,16-16V48A16,16,0,0,0,192,32Z"></path>
-                    </svg>
-                </button>
+                ${isLoggedIn ? 
+                    `<button
+                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 bg-[#f0f2f4] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em]"
+                        onclick="handleLogout()"
+                        title="Logout"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                            <path d="M112,216a8,8,0,0,1-8,8H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h56a8,8,0,0,1,0,16H48V208h56A8,8,0,0,1,112,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L196.69,120H104a8,8,0,0,0,0,16h92.69l-26.35,26.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,221.66,122.34Z"></path>
+                        </svg>
+                    </button>` :
+                    `<button
+                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 bg-[#f0f2f4] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em] ${currentPage === 'login' ? 'border-b-2 border-[#ff8c00]' : ''}"
+                        onclick="window.location.href='login.html'"
+                        title="Login"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                            <path d="M141.66,133.66l-40,40a8,8,0,0,1-11.32-11.32L116.69,136H24a8,8,0,0,1,0-16h92.69L90.34,93.66a8,8,0,0,1,11.32-11.32l40,40A8,8,0,0,1,141.66,133.66ZM192,32H136a8,8,0,0,0,0,16h56V208H136a8,8,0,0,0,0,16h56a16,16,0,0,0,16-16V48A16,16,0,0,0,192,32Z"></path>
+                        </svg>
+                    </button>`
+                }
                 <button
                     class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 md:h-10 bg-[#f0f2f4] text-[#111418] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 ${currentPage === 'search' ? 'border-b-2 border-[#ff8c00]' : ''}"
                     onclick="window.location.href='search.html'"
@@ -129,12 +143,45 @@ function createFooter() {
     `;
 }
 
+// 로그아웃 처리 함수
+async function handleLogout() {
+    try {
+        // Supabase 로그아웃
+        if (typeof supabase !== 'undefined') {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('로그아웃 오류:', error);
+                alert('로그아웃 중 오류가 발생했습니다.');
+                return;
+            }
+        }
+        
+        // 로그인 페이지로 리다이렉트
+        window.location.href = 'login.html';
+    } catch (error) {
+        console.error('로그아웃 처리 중 오류:', error);
+        alert('로그아웃 중 오류가 발생했습니다.');
+    }
+}
+
 // 네비게이션과 푸터를 페이지에 삽입하는 함수
 function initNavigation(currentPage = '') {
-    function insertNavigation() {
+    async function insertNavigation() {
+        let isLoggedIn = false;
+        
+        // Supabase 인증 상태 확인
+        try {
+            if (typeof supabase !== 'undefined') {
+                const { data: { user } } = await supabase.auth.getUser();
+                isLoggedIn = !!user;
+            }
+        } catch (error) {
+            console.error('인증 상태 확인 오류:', error);
+        }
+        
         const navContainer = document.getElementById('navigation-container');
         if (navContainer) {
-            navContainer.innerHTML = createNavigation(currentPage);
+            navContainer.innerHTML = createNavigation(currentPage, isLoggedIn);
         }
         
         // 푸터 삽입
@@ -144,10 +191,41 @@ function initNavigation(currentPage = '') {
         }
     }
 
+    // Supabase가 로드될 때까지 대기
+    async function waitForSupabaseAndInit() {
+        let attempts = 0;
+        const maxAttempts = 50; // 5초 대기
+        
+        while (attempts < maxAttempts) {
+            if (typeof supabase !== 'undefined') {
+                await insertNavigation();
+                return;
+            }
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        
+        // Supabase 로드 실패 시에도 기본 네비게이션 표시
+        insertNavigation();
+    }
+
     // DOM이 이미 로드되었으면 즉시 실행, 아니면 이벤트 리스너 등록
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', insertNavigation);
+        document.addEventListener('DOMContentLoaded', waitForSupabaseAndInit);
     } else {
-        insertNavigation();
+        waitForSupabaseAndInit();
+    }
+}
+
+// 인증 상태 변화 감지 및 네비게이션 업데이트
+function setupAuthStateListener(currentPage = '') {
+    if (typeof supabase !== 'undefined') {
+        supabase.auth.onAuthStateChange((event, session) => {
+            const isLoggedIn = !!session;
+            const navContainer = document.getElementById('navigation-container');
+            if (navContainer) {
+                navContainer.innerHTML = createNavigation(currentPage, isLoggedIn);
+            }
+        });
     }
 } 

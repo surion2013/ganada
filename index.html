@@ -81,6 +81,13 @@
 
     <script>
       initNavigation('home');
+      
+      // 페이지 로드 후 인증 상태 리스너 설정
+      document.addEventListener('DOMContentLoaded', function() {
+          setTimeout(() => {
+              setupAuthStateListener('home');
+          }, 1000);
+      });
     </script>
     
     <script>
