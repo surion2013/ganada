@@ -10,7 +10,7 @@ function createNavigation(currentPage = '') {
                 </div>
                 <h2 class="text-[#111418] text-lg md:text-lg font-bold leading-tight tracking-[-0.015em] cursor-pointer" onclick="window.location.href='index.html'">GaNaDa</h2>
             </div>
-            <div class="flex flex-1 justify-end items-center">
+            <div class="flex items-center gap-2 md:gap-4">
                 <!-- 데스크톱 메뉴 -->
                 <div class="hidden md:flex items-center gap-9">
                     <a class="text-[#111418] text-sm font-medium leading-normal ${currentPage === 'home' ? 'font-bold' : ''}" href="index.html">Home</a>
@@ -58,9 +58,8 @@ function createNavigation(currentPage = '') {
                         </svg>
                     </button>
                 </div>
-                
-                <!-- 검색 및 알림 버튼들 -->
-                <div class="flex gap-2 md:gap-4 ml-2 md:ml-8">
+
+                <div class="flex items-center gap-2 md:gap-4">
                     <button
                         class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 md:h-10 bg-[#f0f2f4] text-[#111418] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
                         onclick="window.location.href='search.html'"
