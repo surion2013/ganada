@@ -33,7 +33,7 @@ function createNavigation(currentPage = '', isLoggedIn = false) {
                 </div>
             </div>
             <!-- 모바일에서 버튼들 (로고 없이 가운데 정렬) -->
-            <div class="flex md:hidden items-center gap-1 flex-1 justify-center">
+            <div class="flex md:hidden items-center gap-4 flex-1 justify-center">
                 <button
                     class="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 w-10 bg-[#f0f2f4] text-[#111418] text-sm font-bold leading-normal tracking-[0.015em] ${currentPage === 'home' ? 'border-b-2 border-[#ff8c00]' : ''}"
                     onclick="window.location.href='index.html'"
@@ -48,8 +48,8 @@ function createNavigation(currentPage = '', isLoggedIn = false) {
                     onclick="window.location.href='explore.html'"
                     title="Explore"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M128,16A112,112,0,1,0,240,128,112.13,112.13,0,0,0,128,16Zm0,208a96,96,0,1,1,96-96A96.11,96.11,0,0,1,128,224ZM173.66,90.34a8,8,0,0,1,11.31,11.32l-12,12a8,8,0,0,1-11.31-11.32Zm-67.32,67.32a8,8,0,0,1-11.31,11.32l-12-12a8,8,0,0,1,11.31-11.32ZM184,128a8,8,0,0,1-8,8H152a8,8,0,0,1,0-16h24A8,8,0,0,1,184,128ZM128,72a8,8,0,0,1,8-8V40a8,8,0,0,1-16,0V64A8,8,0,0,1,128,72Z"></path>
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px">
+                        <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
                     </svg>
                 </button>
                 <button

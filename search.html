@@ -467,8 +467,8 @@
                     case 'account':
                         const followButtonText = item.is_following ? '팔로잉' : '팔로우';
                         const followButtonClass = item.is_following 
-                            ? 'px-4 py-1 text-xs font-medium rounded-lg bg-[#9bb5d9] text-[#121416] hover:bg-[#8aa8d0] transition-colors'
-                            : 'px-4 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors';
+                            ? 'px-4 py-1 text-xs font-medium rounded-lg bg-[#6b7280] text-white hover:bg-[#4b5563] transition-colors'
+                            : 'px-4 py-1 text-xs font-medium rounded-lg bg-[#ff8c00] text-white hover:bg-[#e67e00] transition-colors';
                         
                         return `
                             <div class="flex flex-col items-center p-4 bg-[#f8f9fa] rounded-xl hover:bg-[#f0f2f4] transition-colors">
@@ -528,7 +528,7 @@
                     if (error) throw error;
                     
                     buttonElement.textContent = '팔로우';
-                    buttonElement.className = 'px-4 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors';
+                    buttonElement.className = 'px-4 py-1 text-xs font-medium rounded-lg bg-[#ff8c00] text-white hover:bg-[#e67e00] transition-colors';
                 } else {
                     // 팔로우
                     const { error } = await supabase
@@ -541,7 +541,7 @@
                     if (error) throw error;
                     
                     buttonElement.textContent = '팔로잉';
-                    buttonElement.className = 'px-4 py-1 text-xs font-medium rounded-lg bg-[#9bb5d9] text-[#121416] hover:bg-[#8aa8d0] transition-colors';
+                    buttonElement.className = 'px-4 py-1 text-xs font-medium rounded-lg bg-[#6b7280] text-white hover:bg-[#4b5563] transition-colors';
                 }
                 
             } catch (error) {

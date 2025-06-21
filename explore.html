@@ -243,7 +243,7 @@
           </div>
           <p class="text-sm font-bold text-[#121416] mb-1 text-center truncate w-full">${artist.username || 'Unknown'}</p>
           <p class="text-xs text-[#6a7581] mb-2 text-center">팔로워 ${(artist.followers_count || 0).toLocaleString()}명</p>
-          <button class="px-3 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors"
+          <button class="px-3 py-1 text-xs font-medium rounded-lg bg-[#ff8c00] text-white hover:bg-[#e67e00] transition-colors"
                   onclick="event.stopPropagation(); followArtist('${artist.id}', this)">
             팔로우
           </button>
@@ -293,10 +293,10 @@
           if (result.success) {
             if (result.following) {
               buttonElement.textContent = '팔로잉';
-              buttonElement.className = 'px-3 py-1 text-xs font-medium rounded-lg bg-[#9bb5d9] text-[#121416] hover:bg-[#8aa8d0] transition-colors';
+              buttonElement.className = 'px-3 py-1 text-xs font-medium rounded-lg bg-[#6b7280] text-white hover:bg-[#4b5563] transition-colors';
             } else {
               buttonElement.textContent = '팔로우';
-              buttonElement.className = 'px-3 py-1 text-xs font-medium rounded-lg bg-[#b2cae5] text-[#121416] hover:bg-[#9bb5d9] transition-colors';
+              buttonElement.className = 'px-3 py-1 text-xs font-medium rounded-lg bg-[#ff8c00] text-white hover:bg-[#e67e00] transition-colors';
             }
           } else {
             alert('팔로우 처리 중 오류가 발생했습니다.');

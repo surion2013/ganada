@@ -39,7 +39,7 @@
                   <!-- 팔로우 버튼 (다른 사용자의 프로필일 때만 표시) -->
                   <div class="w-full max-w-xs" id="follow-button-container" style="display: none;">
                     <button
-                      class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full"
+                      class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#ff8c00] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#e67e00] transition-colors"
                       onclick="toggleFollow()"
                       id="follow-btn"
                     >
@@ -149,11 +149,11 @@
             isFollowing = result.following;
             
             if (isFollowing) {
-              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#b2cae5] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full';
+              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#6b7280] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#4b5563] transition-colors';
               followText.textContent = '팔로잉';
               followerCount++;
             } else {
-              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full';
+              followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#ff8c00] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#e67e00] transition-colors';
               followText.textContent = '팔로우';
               followerCount--;
             }
@@ -185,8 +185,8 @@
           // 다른 사용자의 프로필
           currentProfileUserId = userId;
           
-          // 팔로우 버튼 표시 (로그인한 경우에만)
-          if (currentUser.id) {
+          // 팔로우 버튼 표시 (로그인한 경우에만, 자기 자신이 아닌 경우에만)
+          if (currentUser.id && userId !== currentUser.id) {
             document.getElementById('follow-button-container').style.display = 'block';
             
             // 팔로우 상태 확인
@@ -198,10 +198,10 @@
                 const followText = document.getElementById('follow-text');
                 
                 if (isFollowing) {
-                  followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#b2cae5] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full';
+                  followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#6b7280] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#4b5563] transition-colors';
                   followText.textContent = '팔로잉';
                 } else {
-                  followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f1f2f4] text-[#121416] text-sm font-bold leading-normal tracking-[0.015em] w-full';
+                  followBtn.className = 'flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#ff8c00] text-white text-sm font-bold leading-normal tracking-[0.015em] w-full hover:bg-[#e67e00] transition-colors';
                   followText.textContent = '팔로우';
                 }
               }
